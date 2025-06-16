@@ -2,24 +2,14 @@ import { Home, Package, Users, LogOut, ShoppingCart } from "lucide-react";
 
 export default function Sidebar() {
   return (
-    <div className="w-64 bg-white border-r shadow-sm">
-      <div className="p-6 text-xl font-bold text-pink-500">TreatBox Admin</div>
-      <ul className="space-y-2 p-4 text-gray-700">
-        <li className="flex items-center space-x-2 hover:text-pink-500 cursor-pointer">
-          <Home size={18} /> <span>Dashboard</span>
-        </li>
-        <li className="flex items-center space-x-2 hover:text-pink-500 cursor-pointer">
-          <ShoppingCart size={18} /> <span>Orders</span>
-        </li>
-        <li className="flex items-center space-x-2 hover:text-pink-500 cursor-pointer">
-          <Package size={18} /> <span>Products</span>
-        </li>
-        <li className="flex items-center space-x-2 hover:text-pink-500 cursor-pointer">
-          <Users size={18} /> <span>Customers</span>
-        </li>
-        <li className="flex items-center space-x-2 hover:text-pink-500 cursor-pointer mt-10">
-          <LogOut size={18} /> <span>Logout</span>
-        </li>
+    <div className="w-64 min-h-screen bg-gradient-to-b from-pink-200 via-rose-100 to-orange-100 shadow-md">
+      <div className="p-6 text-2xl font-bold text-pink-800">TreatBox 🍬</div>
+      <ul className="space-y-4 p-4 text-pink-900 font-medium">
+        <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">🏠 Dashboard</li>
+        <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">📦 Orders</li>
+        <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">🎁 Products</li>
+        <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">👥 Customers</li>
+        <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer mt-10">🚪 Logout</li>
       </ul>
     </div>
   );
