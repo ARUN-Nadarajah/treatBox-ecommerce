@@ -1,5 +1,3 @@
-import { Home, Package, Users, LogOut, ShoppingCart } from "lucide-react";
-
 export default function Sidebar() {
   return (
     <div className="w-64 min-h-screen bg-gradient-to-b from-pink-200 via-rose-100 to-orange-100 shadow-md">
