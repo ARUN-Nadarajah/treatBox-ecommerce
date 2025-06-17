@@ -7,10 +7,11 @@
   },
   "name": "backend",
   "version": "1.0.0",
+  "type":"module",
   "main": "server.js",
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon /backend/server.js"
+    "start": "nodemon backend/server.js"
   },
   "keywords": [],
   "author": "",
