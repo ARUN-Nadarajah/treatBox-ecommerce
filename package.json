@@ -10,7 +10,7 @@
   "main": "server.js",
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon /backend/server.js"
   },
   "keywords": [],
   "author": "",

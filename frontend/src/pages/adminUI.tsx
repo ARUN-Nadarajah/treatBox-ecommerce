@@ -1,4 +1,4 @@
-import Sidebar from "../components/sidebar";
+import Sidebar from "../components/adminSidebar";
 import Header from "../components/header";
 import DashboardCards from "../components/dashboardCards";
 import ProductTable from "../components/productTable";
