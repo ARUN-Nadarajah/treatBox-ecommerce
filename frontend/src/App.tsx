@@ -1,13 +1,19 @@
-import AdminDashboard from './pages/adminUI'
-import './App.css'
+import AdminDashboard from "./pages/adminUI";
+import Home from "./pages/Home.js";
+import ProductDetails from "./pages/ProductDetails.js";
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
 
 function App() {
-
   return (
     <>
-    <AdminDashboard/>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
