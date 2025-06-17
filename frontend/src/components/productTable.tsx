@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   fetchProducts,
   createProduct,
@@ -26,7 +26,10 @@ export default function ProductManager() {
         if (res.data && Array.isArray(res.data.products)) {
           setProducts(res.data.products);
         } else {
-          console.error("Expected array inside res.data.products, got:", res.data);
+          console.error(
+            "Expected array inside res.data.products, got:",
+            res.data
+          );
         }
       })
       .catch((err) => console.error("Failed to fetch products", err));
@@ -77,7 +80,9 @@ export default function ProductManager() {
       if (!editingProductId) return;
       await updateProduct(editingProductId, editValues);
       setProducts((prev) =>
-        prev.map((p) => (p._id === editingProductId ? { ...p, ...editValues } : p))
+        prev.map((p) =>
+          p._id === editingProductId ? { ...p, ...editValues } : p
+        )
       );
       setEditingProductId(null);
       setEditValues({});
@@ -113,40 +118,61 @@ export default function ProductManager() {
       </div>
 
       {/* Product List */}
-      <ul className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
-          <li
+          <div
             key={product._id}
-            className="border p-4 rounded shadow-sm flex flex-col gap-2"
+            className="border p-4 rounded shadow-sm flex flex-col gap-2 bg-white hover:shadow-lg hover:scale-[1.02] transition duration-300"
           >
             {editingProductId === product._id ? (
-              <div className="grid grid-cols-2 gap-2">
-                {["name", "price", "stock", "image", "description"].map((field) => (
-                  <input
-                    key={field}
-                    className="border p-2"
-                    placeholder={field}
-                    value={(editValues as any)[field] || ""}
-                    onChange={(e) =>
-                      setEditValues({ ...editValues, [field]: e.target.value })
-                    }
-                    type={field === "price" || field === "stock" ? "number" : "text"}
-                  />
-                ))}
+              <div className="grid grid-cols-1 gap-2">
+                {["name", "price", "stock", "image", "description"].map(
+                  (field) => (
+                    <input
+                      key={field}
+                      className="border p-2 rounded"
+                      placeholder={field}
+                      value={(editValues as any)[field] || ""}
+                      onChange={(e) =>
+                        setEditValues({
+                          ...editValues,
+                          [field]: e.target.value,
+                        })
+                      }
+                      type={
+                        field === "price" || field === "stock"
+                          ? "number"
+                          : "text"
+                      }
+                    />
+                  )
+                )}
                 <button
                   onClick={saveEdit}
-                  className="col-span-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                   Save
                 </button>
               </div>
             ) : (
               <>
-                <p><strong>Name:</strong> {product.name}</p>
-                <p><strong>Price:</strong> ${product.price}</p>
-                <p><strong>Stock:</strong> {product.stock}</p>
-                <p><strong>Description:</strong> {product.description}</p>
-                <img src={product.image} alt={product.name} className="h-32 w-32 object-cover rounded" />
+                <p>
+                  <strong>Name:</strong> {product.name}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${product.price}
+                </p>
+                <p>
+                  <strong>Stock:</strong> {product.stock}
+                </p>
+                <p>
+                  <strong>Description:</strong> {product.description}
+                </p>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-32 w-full object-cover rounded hover:opacity-90 hover:scale-105 transition duration-300"
+                />
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => startEditing(product)}
@@ -163,9 +189,9 @@ export default function ProductManager() {
                 </div>
               </>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
