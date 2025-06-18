@@ -1,23 +1,40 @@
-import React, { useState } from 'react';
+import type { ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
+type FeedbackForm = {
+  name: string;
+  email: string;
+  phone: string;
+  feedback: string;
+  rating: number;
+};
 
 const Feedback = () => {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    feedback: '',
+  const [form, setForm] = useState<FeedbackForm>({
+    name: "",
+    email: "",
+    phone: "",
+    feedback: "",
     rating: 0,
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-  const handleRating = (stars) => setForm({ ...form, rating: stars });
+  // Typed event handler for inputs and textarea
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleSubmit = (e) => {
+  // Explicit number parameter type for rating handler
+  const handleRating = (stars: number) => {
+    setForm((prev) => ({ ...prev, rating: stars }));
+  };
+
+  // Typed form submit handler
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
-    alert('Thank you for your feedback!');
+    alert("Thank you for your feedback!");
   };
 
   return (
@@ -28,7 +45,7 @@ const Feedback = () => {
       >
         <h1 className="text-4xl font-bold text-pink-500 text-center">Share Your Feedback</h1>
 
-        {['name', 'email', 'phone'].map((field) => (
+        {["name", "email", "phone"].map((field) => (
           <div key={field} className="flex flex-col gap-2">
             <label className="text-pink-600 font-semibold" htmlFor={field}>
               {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -36,8 +53,8 @@ const Feedback = () => {
             <input
               id={field}
               name={field}
-              type={field === 'phone' ? 'tel' : field}
-              value={form[field]}
+              type={field === "phone" ? "tel" : field}
+              value={form[field as keyof FeedbackForm] as string}
               onChange={handleChange}
               className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700"
               required
@@ -46,16 +63,18 @@ const Feedback = () => {
         ))}
 
         <div className="flex flex-col gap-2">
-          <label className="text-pink-600 font-semibold" htmlFor="feedback">Your Feedback</label>
+          <label className="text-pink-600 font-semibold" htmlFor="feedback">
+            Your Feedback
+          </label>
           <textarea
             id="feedback"
             name="feedback"
-            rows="4"
+            rows={4}
             value={form.feedback}
             onChange={handleChange}
             className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700 resize-none"
             required
-          ></textarea>
+          />
         </div>
 
         <div className="flex flex-col items-center gap-2">
@@ -66,7 +85,9 @@ const Feedback = () => {
                 type="button"
                 key={star}
                 onClick={() => handleRating(star)}
-                className={`text-3xl transition transform ${form.rating >= star ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-yellow-300'}`}
+                className={`text-3xl transition transform ${
+                  form.rating >= star ? "text-yellow-400 scale-110" : "text-gray-300 hover:text-yellow-300"
+                }`}
               >
                 ★
               </button>
@@ -79,7 +100,7 @@ const Feedback = () => {
           disabled={submitted}
           className="w-full bg-gradient-to-r from-pink-400 to-blue-400 text-white font-bold py-3 rounded-xl shadow-md hover:opacity-90 transition disabled:opacity-50"
         >
-          {submitted ? 'Submitting...' : 'Submit Feedback'}
+          {submitted ? "Submitting..." : "Submit Feedback"}
         </button>
       </form>
     </div>

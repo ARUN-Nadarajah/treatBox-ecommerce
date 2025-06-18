@@ -1,8 +1,9 @@
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
-import About from './pages/About'; // adjust path as needed
+import About from './pages/About'; 
 import Feedback from './pages/Feedback';
+import AdminDashboard from './pages/adminUI';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 function App() {
   return (
