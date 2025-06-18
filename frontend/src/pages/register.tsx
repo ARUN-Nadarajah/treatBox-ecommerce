@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-
-interface RegisterFormData {
-  username: string;
-  email: string;
-  password: string;
-  number: string;
-  address: string;
-  firstName: string;
-  lastName: string;
-  DOB: string;
-  gender: string;
-  image?: string;
-}
+import { registerUser } from "../APIs/authApi";
+import type { RegisterFormData } from "../APIs/authApi";
 
 function isAxiosError(error: unknown): error is {
   isAxiosError?: boolean;
@@ -122,7 +110,7 @@ const Register: React.FC = () => {
     setError(null);
 
     try {
-      await axios.post("/api/auth/register", form);
+      await registerUser(form);
       toast.success("Registration successful!");
       navigate("/login");
     } catch (err: unknown) {

@@ -14,7 +14,7 @@ const AuthGuard: React.FC<Props> = ({ children, requireAdmin = false }) => {
 
   const user = JSON.parse(userRaw);
 
-  if (requireAdmin && user.role !== "admin") {
+  if (requireAdmin && user.role == "admin") {
     return <Navigate to="/admin" replace />;
   }
 
