@@ -28,6 +28,8 @@ interface ProductResponse {
 
 export const fetchProducts = () => API.get<FetchProductsResponse>("/");
 
+export const fetchProduct = (id: string) => API.get<ProductResponse>(`/${id}`);
+
 export const createProduct = (data: Partial<Product>) =>
   API.post<ProductResponse>("/", data);
 
