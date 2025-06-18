@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const avurudhuProducts = [
   { name: "New Year Ribbon Cake - Design 1", price: 2500, image: "https://www.divine.lk/cdn/shop/products/IMG-20210318-WA0011_1024x1024@2x.jpg?v=1617260440" },
@@ -24,8 +23,8 @@ const classicCakes = [
   { name: "Chocolate Mud Cake", price: 2900, image: "https://www.divine.lk/cdn/shop/products/Chocolate_Mud_Cake_360x.JPG?v=1560022309" },
   { name: "Coffee Cake", price: 2000, image: "https://www.divine.lk/cdn/shop/products/Coffee_Cake_360x.JPG?v=1560022312" },
   { name: "Coffee Cake with Roasted Nuts", price: 2900, image: "https://www.divine.lk/cdn/shop/products/Coffee_Cake_with_Roasted_Nuts_1024x1024@2x.JPG?v=1560022312" },
-  { name: "Date Cake", price: 2800, image: "https://www.divine.lk/cdn/shop/products/datecake_540x.jpg?v=1617260120" },
-  { name: "Date Cake with Butterscotch Topping", price: 3300, image: "https://www.divine.lk/cdn/shop/products/datetop_540x.jpg?v=1617260121" },
+  { name: "Date Cake", price: 2800, image: "https://www.divine.lk/cdn/shop/products/Lemon_Curd_Cake_1024x1024@2x.JPG?v=1561959524" },
+  { name: "Date Cake with Butterscotch Topping", price: 3300, image: "https://www.divine.lk/cdn/shop/products/Mocha_Cake_1024x1024@2x.jpg?v=1560022342" },
   { name: "Jaggery Cake", price: 2900, image: "https://www.divine.lk/cdn/shop/products/jaggerycake_540x.jpg?v=1617260122" },
   { name: "Lemon Curd Cake", price: 2600, image: "https://www.divine.lk/cdn/shop/products/lemoncake_540x.jpg?v=1617260123" },
   { name: "Love Cake", price: 2800, image: "https://www.divine.lk/cdn/shop/products/Date_cake_1024x1024@2x.JPG?v=1560022315" },
@@ -34,38 +33,24 @@ const classicCakes = [
 ];
 
 const Home = () => {
-
   const navigate = useNavigate();
 
   const handleClick = (product) => {
     navigate(`/product/${encodeURIComponent(product.name)}`, { state: product });
   };
 
-  const renderProducts = (products) =>
-    products.map((product, idx) => (
-      <div
-        key={idx}
-        onClick={() => handleClick(product)}
-        className="bg-white rounded-xl shadow-lg max-w-xs w-full hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6"
-      >
-        <img src={product.image} alt={product.name} className="w-1/2 object-contain rounded-md mb-4" />
-        <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
-        <p className="text-rose-600 font-bold text-lg">Rs. {product.price.toLocaleString()}</p>
-      </div>
-    ));
-
   return (
     <div className="font-sans text-gray-800">
-      {/* Navigation */}
+      {/* Navbar */}
       <nav className="flex items-center justify-between p-6 bg-rose-100 shadow-md sticky top-0 z-50">
         <div className="text-2xl font-bold text-rose-700">TreatBox</div>
         <ul className="hidden md:flex space-x-8 font-medium">
-          <li><a href="/" className="hover:text-rose-900 transition">Home</a></li>
-          <li><a href="/products" className="hover:text-rose-900 transition">Products</a></li>
-          <li><a href="/about" className="hover:text-rose-900 transition">About</a></li>
-          <li><a href="/contact" className="hover:text-rose-900 transition">Contact</a></li>
+          <li><Link to="/" className="hover:text-rose-900">Home</Link></li>
+          <li><Link to="/products" className="hover:text-rose-900">Products</Link></li>
+          <li><Link to="/about" className="hover:text-rose-900">About</Link></li>
+          <li><Link to="/contact" className="hover:text-rose-900">Contact</Link></li>
+          <li><Link to="/feedback" className="hover:text-rose-900">feedback</Link></li>
         </ul>
-        <button className="md:hidden text-rose-700 font-bold">Menu</button>
       </nav>
 
       {/* Hero Banner */}
@@ -76,45 +61,33 @@ const Home = () => {
         }}
       >
         <div className="bg-rose-900 bg-opacity-50 p-8 rounded-lg max-w-lg text-white">
-          <h1 className="text-5xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-            Freshly Baked <br /> Treats Just For You
-          </h1>
-          <p className="mb-8 text-lg font-light drop-shadow">
-            Discover the taste of home with our delicious bakery delights.
-          </p>
-          <a
-            href="/product"
-            className="inline-block bg-rose-500 hover:bg-rose-600 px-8 py-3 rounded-full font-semibold shadow-lg transition"
-          >
+          <h1 className="text-5xl font-extrabold mb-6">Freshly Baked<br /> Treats Just For You</h1>
+          <p className="mb-8 text-lg font-light">Discover the taste of home with our delicious bakery delights.</p>
+          <Link to="/products" className="inline-block bg-rose-500 hover:bg-rose-600 px-8 py-3 rounded-full font-semibold shadow-lg">
             Shop Now
-          </a>
+          </Link>
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Avurudhu Products */}
       <section className="py-16 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl font-extrabold text-center mb-12 text-rose-700">New Year & Avurudhu Collection</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
           {avurudhuProducts.map((product, idx) => (
-            <Link to={`/product/${idx}`} key={idx} className="w-full max-w-xs">
-              <div
-                className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6"
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-1/ object-contain rounded-md mb-4"
-                />
-                <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
-                <p className="text-rose-600 font-bold text-lg">Rs. {product.price.toLocaleString()}</p>
-              </div>
-            </Link>
+            <div
+              key={idx}
+              onClick={() => handleClick(product)}
+              className="bg-white rounded-xl shadow-lg max-w-xs w-full hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6"
+            >
+              <img src={product.image} alt={product.name} className="w-1/2 object-contain rounded-md mb-4" />
+              <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
+              <p className="text-rose-600 font-bold text-lg">Rs. {product.price.toLocaleString()}</p>
+            </div>
           ))}
         </div>
       </section>
 
-
-      {/* Classic Cakes Section */}
+      {/* Classic Cakes */}
       <section className="py-16 px-6 bg-gray-50">
         <h2 className="text-4xl font-extrabold text-center mb-12 text-rose-700">Classic Cakes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
@@ -124,7 +97,7 @@ const Home = () => {
               onClick={() => handleClick(product)}
               className="bg-white rounded-xl shadow-lg max-w-xs w-full hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6"
             >
-              <img src={product.image} alt={product.name} className="w-1/ object-contain rounded-md mb-4" />
+              <img src={product.image} alt={product.name} className="w-1/2 object-contain rounded-md mb-4" />
               <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
               <p className="text-rose-600 font-bold text-lg">Rs. {product.price.toLocaleString()}</p>
             </div>
