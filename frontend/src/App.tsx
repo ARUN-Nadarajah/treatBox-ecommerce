@@ -1,19 +1,19 @@
-import AdminDashboard from "./pages/adminUI";
-import Home from "./pages/Home.js";
-import ProductDetails from "./pages/ProductDetails.js";
-import { Routes, Route } from "react-router-dom";
-import "./App.css";
-
+import Home from './pages/Home';
+import ProductDetails from './pages/ProductDetails';
+import Contact from './pages/Contact';
+import About from './pages/About'; // adjust path as needed
+import Feedback from './pages/Feedback';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/product/:id" element={<ProductDetails />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/feedback" element={<Feedback />} />
+    </Routes>
   );
 }
 
