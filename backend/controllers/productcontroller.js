@@ -4,7 +4,7 @@ import Product from "../models/productmodel.js";
 export const createProduct = async (req, res) => {
   const product = req.body;
 
-  if (!product.name || !product.price || !product.image || !product.description) {
+  if (!product.name || !product.price || !product.image || !product.description || !product.stock || !product.category) {
     return res.status(400).json({ success: false, message: "All fields are required" });
   }
 
