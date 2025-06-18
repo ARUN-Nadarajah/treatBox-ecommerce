@@ -11,6 +11,7 @@ export interface Product {
   stock: number;
   image: string;
   description: string;
+  category: string;
 }
 
 interface FetchProductsResponse {
