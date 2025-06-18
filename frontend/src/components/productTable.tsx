@@ -21,10 +21,6 @@ export default function ProductManager() {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Partial<Product>>({});
 
-  const [searchQuery, setSearchQuery] = useState(""); // 🔍 search
-  const [selectedCategory, setSelectedCategory] = useState(""); // 🔎 category filter
-  const [priceRange, setPriceRange] = useState(""); // 💵 price filter
-
   useEffect(() => {
     fetchProducts()
       .then((res) => {
@@ -98,7 +94,7 @@ export default function ProductManager() {
     }
   };
 
-  // 🔧 Group products by category
+  // 🔧 NEW: Group products by category
   const groupedProducts = products.reduce((acc, product) => {
     const category = product.category || "Uncategorized";
     if (!acc[category]) acc[category] = [];
@@ -106,109 +102,37 @@ export default function ProductManager() {
     return acc;
   }, {} as Record<string, Product[]>);
 
-  // 🔍 Apply filters
-  const filteredProducts = Object.entries(groupedProducts).reduce(
-    (acc, [category, items]) => {
-      const filtered = items.filter((product) => {
-        const matchesSearch = product.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
-        const matchesCategory =
-          !selectedCategory || product.category === selectedCategory;
-        const matchesPrice = (() => {
-          if (!priceRange) return true;
-          const price = product.price;
-          if (priceRange === "0-1999") return price < 2000;
-          if (priceRange === "2000-2999") return price >= 2000 && price < 3000;
-          if (priceRange === "3000-4999") return price >= 3000 && price < 5000;
-          if (priceRange === "5000+") return price >= 5000;
-          return true;
-        })();
-        return matchesSearch && matchesCategory && matchesPrice;
-      });
-      if (filtered.length > 0) acc[category] = filtered;
-      return acc;
-    },
-    {} as Record<string, Product[]>
-  );
-
-  const uniqueCategories = [
-    ...new Set(products.map((p) => p.category || "Uncategorized")),
-  ];
-
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Product Manager</h2>
+    <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Product Manager</h2>
 
-      {/* 🔹 ADD PRODUCT SECTION */}
-      <div className="mb-8 p-4 border rounded-lg bg-gray-50 shadow-sm">
-        <h3 className="text-xl font-semibold mb-4">➕ Add New Product</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {["name", "price", "stock", "image", "description", "category"].map(
-            (field) => (
-              <input
-                key={field}
-                className="border p-2 rounded"
-                placeholder={field[0].toUpperCase() + field.slice(1)}
-                value={(newProduct as any)[field]}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, [field]: e.target.value })
-                }
-                type={field === "price" || field === "stock" ? "number" : "text"}
-              />
-            )
-          )}
-          <button
-            onClick={handleAddProduct}
-            className="col-span-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Add Product
-          </button>
-        </div>
-      </div>
-
-      {/* 🔍 FILTER & SEARCH SECTION */}
-      <div className="mb-10 p-4 border rounded-lg bg-blue-50 shadow-sm">
-        <h3 className="text-xl font-semibold mb-4">🔎 Filter & Search</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Add Product Form */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        {["name", "price", "stock", "image", "description", "category"].map((field) => (
           <input
-            type="text"
-            placeholder="Search by name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="border p-2 rounded"
+            key={field}
+            className="border p-2"
+            placeholder={field[0].toUpperCase() + field.slice(1)}
+            value={(newProduct as any)[field]}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, [field]: e.target.value })
+            }
+            type={field === "price" || field === "stock" ? "number" : "text"}
           />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border p-2 rounded"
-          >
-            <option value="">All Categories</option>
-            {uniqueCategories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          <select
-            value={priceRange}
-            onChange={(e) => setPriceRange(e.target.value)}
-            className="border p-2 rounded"
-          >
-            <option value="">All Prices</option>
-            <option value="0-1999">Under 2000</option>
-            <option value="2000-2999">2000 - 2999</option>
-            <option value="3000-4999">3000 - 4999</option>
-            <option value="5000+">5000+</option>
-          </select>
-        </div>
+        ))}
+        <button
+          onClick={handleAddProduct}
+          className="col-span-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Add Product
+        </button>
       </div>
 
       {/* 🆕 Grouped Product List by Category */}
       <div className="space-y-10">
-        {Object.entries(filteredProducts).map(([category, items]) => (
+        {Object.entries(groupedProducts).map(([category, items]) => (
           <div key={category}>
-            <h3 className="text-xl font-semibold mb-4">{category}</h3>
+            <h3 className="text-xl font-semibold mb-4">{category}</h3> {/* 🔧 Category Title */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {items.map((product) => (
                 <div
@@ -256,6 +180,12 @@ export default function ProductManager() {
                       <p>
                         <strong>Stock:</strong> {product.stock}
                       </p>
+                      <p>
+                        <strong>Description:</strong> {product.description}
+                      </p>
+                      <p>
+                        <strong>Category:</strong> {product.category}
+                      </p> {/* 🔧 Un-commented Category */}
                       <img
                         src={product.image}
                         alt={product.name}
