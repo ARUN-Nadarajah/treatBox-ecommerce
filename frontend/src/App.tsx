@@ -4,9 +4,11 @@ import Contact from './pages/Contact';
 import About from './pages/About'; 
 import Feedback from './pages/Feedback';
 import AdminDashboard from './pages/adminUI';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import './App.css';
 function App() {
   return (
+    <>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/product/:id" element={<ProductDetails />} />
@@ -15,6 +17,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/feedback" element={<Feedback />} />
     </Routes>
+    </>
   );
 }
 
