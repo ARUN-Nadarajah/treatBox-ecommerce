@@ -1,7 +1,9 @@
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
+import NavBar from "../components/NavBar";
 
 const Contact = () => {
   return (
+    <><NavBar /> 
     <div
       className="min-h-screen px-6 py-16 bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 bg-cover bg-no-repeat bg-center"
       style={{
@@ -111,6 +113,7 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
