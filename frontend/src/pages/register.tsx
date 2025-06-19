@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { registerUser } from "../APIs/authApi";
 import type { RegisterFormData } from "../APIs/authApi";
 
+// Type guard for Axios error
 function isAxiosError(error: unknown): error is {
   isAxiosError?: boolean;
   response?: { data?: { message?: string } };
@@ -12,14 +13,7 @@ function isAxiosError(error: unknown): error is {
   return typeof error === "object" && error !== null && "isAxiosError" in error;
 }
 
-const getMaxDOB = () => {
-  const today = new Date();
-  today.setFullYear(today.getFullYear() - 18);
-  return today.toISOString().split("T")[0]; // "YYYY-MM-DD"
-};
-
-const maxDOB = getMaxDOB();
-
+// Floating input component
 interface FloatingInputProps {
   id: string;
   name: keyof RegisterFormData | "confirmPassword";
@@ -89,14 +83,14 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
   );
 };
 
-// Helper function to calculate password strength score (0-5)
+// Password strength
 const calculatePasswordStrength = (password: string) => {
   let score = 0;
   if (password.length >= 6) score++;
   if (/[A-Z]/.test(password)) score++;
   if (/[a-z]/.test(password)) score++;
   if (/\d/.test(password)) score++;
-  if (/[\W_]/.test(password)) score++; // special char
+  if (/[\W_]/.test(password)) score++;
   return score;
 };
 
@@ -132,17 +126,11 @@ const Register: React.FC = () => {
     }
   };
 
-  const passwordValidationMessages = [
-    "At least 6 characters",
-    "At least one uppercase letter",
-    "At least one lowercase letter",
-    "At least one number",
-    "At least one special character",
-  ];
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  // Validation helpers:
-  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidPhone = (number: string) => /^\d{10}$/.test(number);
+
   const isPasswordValid = (password: string) =>
     password.length >= 6 &&
     /[A-Z]/.test(password) &&
@@ -154,72 +142,56 @@ const Register: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    const {
-      email,
-      password,
-      confirmPassword,
-      number,
-      DOB,
-    } = form;
+    const { email, password, confirmPassword, number, DOB } = form;
 
-    // Email
     if (!isValidEmail(email)) {
-      setError("Invalid email format");
       toast.error("Invalid email format");
       return;
     }
 
-    // Phone
     if (!isValidPhone(number)) {
-      setError("Phone number must be 10 digits");
       toast.error("Phone number must be 10 digits");
       return;
     }
 
-    // Password match
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
       toast.error("Passwords do not match");
       return;
     }
 
-    // Password strength
     if (!isPasswordValid(password)) {
-      setError("Password does not meet complexity requirements");
-      toast.error("Password must have at least 6 chars, uppercase, lowercase, number & special char");
+      toast.error("Password must include upper/lower case, number & special char");
       return;
     }
 
-    // Age >= 18
-    const dob = new Date(DOB);
-    const ageDifMs = Date.now() - dob.getTime();
-    const age = new Date(ageDifMs).getUTCFullYear() - 1970;
-    if (age < 18) {
-      setError("You must be at least 18 years old");
-      toast.error("You must be at least 18 years old");
+    // Age check: minimum 15 years
+    const today = new Date();
+    const birthDate = new Date(DOB);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 15) {
+      toast.error("You must be at least 15 years old");
       return;
     }
 
     try {
-      // Remove confirmPassword before sending
-      const { confirmPassword, ...sendForm } = form;
-
-      await registerUser(sendForm);
+      const { confirmPassword, ...payload } = form;
+      await registerUser(payload);
       toast.success("Registration successful!");
       navigate("/login");
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         const msg = err.response?.data?.message || "Registration failed";
         toast.error(msg);
-        setError(msg);
       } else {
         toast.error("An unknown error occurred");
-        setError("An unknown error occurred");
       }
     }
   };
 
-  // Password strength bar colors
   const strengthColors = [
     "bg-red-500",
     "bg-orange-500",
@@ -228,9 +200,17 @@ const Register: React.FC = () => {
     "bg-green-600",
   ];
 
+  const passwordValidationMessages = [
+    "At least 6 characters",
+    "At least one uppercase letter",
+    "At least one lowercase letter",
+    "At least one number",
+    "At least one special character",
+  ];
+
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Welcome */}
+      {/* Left side */}
       <div
         className="hidden md:flex w-1/2 bg-cover bg-center relative"
         style={{
@@ -238,7 +218,7 @@ const Register: React.FC = () => {
             "url('https://pixelz.cc/wp-content/uploads/2018/10/blueberry-raspberry-cheesecake-uhd-4k-wallpaper.jpg')",
         }}
       >
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/40" />
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -265,12 +245,6 @@ const Register: React.FC = () => {
           <h2 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
             Create Your <span className="text-rose-600">TreatBox</span> Account
           </h2>
-
-          {error && (
-            <p className="bg-rose-100 text-red-700 p-3 rounded mb-6 text-center font-medium shadow-sm">
-              {error}
-            </p>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
@@ -310,7 +284,6 @@ const Register: React.FC = () => {
               required
             />
 
-            {/* Password input */}
             <FloatingInput
               id="password"
               name="password"
@@ -321,39 +294,30 @@ const Register: React.FC = () => {
               required
             />
 
-            {/* Password Strength Meter */}
+            {/* Password strength bar */}
             {passwordTouched && (
-              <div className="mb-4">
+              <div>
                 <div className="h-2 w-full rounded bg-gray-300">
                   <div
                     style={{ width: `${(passwordScore / 5) * 100}%` }}
-                    className={`h-2 rounded ${strengthColors[passwordScore - 1]}`}
+                    className={`h-2 rounded ${strengthColors[passwordScore - 1] || "bg-red-500"}`}
                   />
                 </div>
-                <ul className="mt-2 text-sm space-y-1 text-gray-700">
+                <ul className="mt-2 text-sm text-gray-700 space-y-1">
                   {passwordValidationMessages.map((msg, idx) => {
-                    const valid = (() => {
-                      switch (idx) {
-                        case 0:
-                          return form.password.length >= 6;
-                        case 1:
-                          return /[A-Z]/.test(form.password);
-                        case 2:
-                          return /[a-z]/.test(form.password);
-                        case 3:
-                          return /\d/.test(form.password);
-                        case 4:
-                          return /[\W_]/.test(form.password);
-                        default:
-                          return false;
-                      }
-                    })();
+                    const valid = [
+                      form.password.length >= 6,
+                      /[A-Z]/.test(form.password),
+                      /[a-z]/.test(form.password),
+                      /\d/.test(form.password),
+                      /[\W_]/.test(form.password),
+                    ][idx];
                     return (
                       <li
                         key={msg}
                         className={valid ? "text-green-600" : "text-red-600"}
                       >
-                        {valid ? "✔ " : "✘ "} {msg}
+                        {valid ? "✔" : "✘"} {msg}
                       </li>
                     );
                   })}
@@ -361,7 +325,6 @@ const Register: React.FC = () => {
               </div>
             )}
 
-            {/* Confirm Password */}
             <FloatingInput
               id="confirmPassword"
               name="confirmPassword"
@@ -396,8 +359,6 @@ const Register: React.FC = () => {
               value={form.DOB}
               onChange={handleChange}
               required
-
-              
             />
             <FloatingInput
               id="gender"

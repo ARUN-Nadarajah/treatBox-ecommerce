@@ -5,7 +5,7 @@ const AuthAPI = axios.create({
   withCredentials: true,
 });
 
-export default AuthAPI;
+
 
 // ----- Interfaces -----
 
