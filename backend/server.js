@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import ProductRouter from "./routes/productroute.js";
 import AuthRouter from "./routes/authroutes.js";
+import UserRouter from "./routes/customerroutes.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/api/products", ProductRouter);
 app.use("/api/auth", AuthRouter);
+app.use("/api/users", UserRouter);
 
 app.listen(process.env.PORT, () => {
   connectDB();
