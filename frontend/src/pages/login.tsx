@@ -70,7 +70,7 @@ const Login: React.FC = () => {
       localStorage.setItem("token", data.token);
 
       toast.success("Login successful!");
-      data.user.username === "admin" ? navigate("/admin") : navigate("/home");
+      data.user.role === "admin" ? navigate("/admin") : navigate("/");
     } catch (err: any) {
       const message =
         err?.response?.data?.message || "Login failed. Please try again.";
