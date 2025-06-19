@@ -1,18 +1,18 @@
-// src/App.js or src/routes/AppRoutes.js
-import { Routes, Route } from "react-router-dom";
-import ProductDetails from "./pages/ProductDetails";
-import Contact from "./pages/Contact";
-import About from "./pages/About";
-import Feedback from "./pages/Feedback";
-import AdminDashboard from "./pages/adminUI";
-import "./App.css";
-import UserHomePage from "./pages/userHome";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import { Routes, Route } from 'react-router-dom';
+import ProductDetails from './pages/ProductDetails';
+import Contact from './pages/Contact';
+import About from './pages/About'; 
+import Feedback from './pages/Feedback';
+import AdminDashboard from './pages/adminUI';
+import './App.css';
+import UserHomePage from './pages/userHome';
+import Login from './pages/login';
+import Register from './pages/register';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PrivateRoute from "./components/privateroute";
-import Logout from "./pages/logout";
+import PrivateRoute from './components/privateroute';
+import Logout from './pages/logout';
+import CustomerManager from './pages/customermanager';
 
 function App() {
   return (
@@ -25,54 +25,27 @@ function App() {
         <Route path="/logout" element={<Logout />} />
 
         {/* Protected Routes */}
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <UserHomePage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <PrivateRoute adminOnly={true}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/product/:id"
-          element={
-            <PrivateRoute>
-              <ProductDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PrivateRoute>
-              <Contact />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <PrivateRoute>
-              <About />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/feedback"
-          element={
-            <PrivateRoute>
-              <Feedback />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/" element={
+          <PrivateRoute><UserHomePage /></PrivateRoute>
+        } />
+        <Route path="/admin" element={
+          <PrivateRoute adminOnly={true}><AdminDashboard /></PrivateRoute>
+        } />
+        <Route path="/admin/customers" element={
+          <PrivateRoute adminOnly={true}><CustomerManager /></PrivateRoute>
+        }/>
+        <Route path="/product/:id" element={
+          <PrivateRoute><ProductDetails /></PrivateRoute>
+        } />
+        <Route path="/contact" element={
+          <PrivateRoute><Contact /></PrivateRoute>
+        } />
+        <Route path="/about" element={
+          <PrivateRoute><About /></PrivateRoute>
+        } />
+        <Route path="/feedback" element={
+          <PrivateRoute><Feedback /></PrivateRoute>
+        } />
       </Routes>
     </>
   );
