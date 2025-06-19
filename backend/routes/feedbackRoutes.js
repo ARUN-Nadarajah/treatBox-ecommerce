@@ -1,27 +1,30 @@
-const express = require('express');
+import express from 'express';
+import Feedback from '../models/feedback.js';
 const router = express.Router();
-const Feedback = require('../models/Feedback');
 
+
+// POST /api/feedback
 // POST /api/feedback
 router.post('/', async (req, res) => {
   try {
-    const { name, email, message, productId } = req.body;
+    const { name, email, phone, feedback, rating } = req.body;
 
-    if (!name || !email || !message || !productId) {
+    if (!name || !email || !phone || !feedback || rating === undefined) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const feedback = new Feedback({ name, email, message, productId });
-    await feedback.save();
+    const newFeedback = new Feedback({ name, email, phone, feedback, rating });
+    await newFeedback.save();
 
     res.status(201).json({ message: 'Feedback submitted successfully' });
   } catch (err) {
+    console.error("Error saving feedback:", err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // GET /api/feedback/:productId
-router.get('/:productId', async (req, res) => {
+router.get('/feedback/:productId', async (req, res) => {
   try {
     const feedbacks = await Feedback.find({ productId: req.params.productId });
     res.json(feedbacks);
@@ -30,4 +33,13 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
-module.exports = router;
+router.get('/', async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    res.json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+export default router;

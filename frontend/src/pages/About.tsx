@@ -1,7 +1,10 @@
 import React from 'react';
+import NavBar from '../components/NavBar';
 
 const About = () => {
   return (
+    <>
+    <NavBar/>
     <div className="bg-gradient-to-br from-pink-50 via-white to-pink-100 min-h-screen py-20 px-6 md:px-16">
       {/* Header */}
       <div className="text-center mb-20">
@@ -76,6 +79,7 @@ const About = () => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

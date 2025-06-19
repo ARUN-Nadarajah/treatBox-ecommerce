@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from './components/privateroute';
 import Logout from './pages/logout';
 import CustomerManager from './pages/customermanager';
+import FeedbackAdmin from './pages/FeedbackList';
 
 function App() {
   return (
@@ -33,6 +34,9 @@ function App() {
         } />
         <Route path="/admin/customers" element={
           <PrivateRoute adminOnly={true}><CustomerManager /></PrivateRoute>
+        }/>
+        <Route path="/admin/feedbacks" element={
+          <PrivateRoute adminOnly={true}><FeedbackAdmin /></PrivateRoute>
         }/>
         <Route path="/product/:id" element={
           <PrivateRoute><ProductDetails /></PrivateRoute>

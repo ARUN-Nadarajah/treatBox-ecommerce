@@ -13,9 +13,11 @@ export default function Sidebar() {
         <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">
           📦 Orders
         </li>
+        <Link to="/admin/feedbacks">
         <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">
-          🎁 Products
+          📝 feedbacks
         </li>
+        </Link>
         <Link to="/admin/customers">
           <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">
             👥 Customers

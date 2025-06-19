@@ -30,12 +30,29 @@ const Feedback = () => {
   };
 
   // Typed form submit handler
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setSubmitted(true);
+
+  try {
+    const res = await fetch("http://localhost:5001/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    if (!res.ok) throw new Error("Failed to submit feedback");
+
     alert("Thank you for your feedback!");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("An error occurred. Please try again.");
+  } finally {
+    setSubmitted(false);
+  }
+};
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-8">
