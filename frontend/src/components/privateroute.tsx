@@ -16,7 +16,7 @@ const PrivateRoute: React.FC<Props> = ({ children, adminOnly = false }) => {
   }
 
   const user = JSON.parse(userData);
-  const isAdmin = user?.username === "admin"; // or user.role === "admin"
+  const isAdmin = user?.role === "admin"; // or user.role === "admin"
 
   if (adminOnly && !isAdmin) {
     return <Navigate to="/" replace />;

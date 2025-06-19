@@ -24,7 +24,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
 
         {/* Protected Routes */}
-        <Route path="/home" element={
+        <Route path="/" element={
           <PrivateRoute><UserHomePage /></PrivateRoute>
         } />
         <Route path="/admin" element={

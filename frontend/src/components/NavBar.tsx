@@ -11,7 +11,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", href: "/home" },
+  { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
               {/* Logo */}
               <div className="flex items-center">
                 <Link
-                  to="/home"
+                  to="/"
                   className="text-2xl font-bold text-rose-700"
                 >
                   TreatBox
