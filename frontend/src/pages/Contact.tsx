@@ -1,8 +1,9 @@
-import React from 'react';
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
+import NavBar from "../components/NavBar";
 
 const Contact = () => {
   return (
+    <><NavBar /> 
     <div
       className="min-h-screen px-6 py-16 bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 bg-cover bg-no-repeat bg-center"
       style={{
@@ -92,7 +93,7 @@ const Contact = () => {
             <div className="relative z-0 w-full group">
               <textarea
                 name="message"
-                rows="4"
+                rows={4}
                 required
                 className="block py-3 px-0 w-full text-md text-gray-800 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-rose-500 peer"
                 placeholder=" "
@@ -112,6 +113,7 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

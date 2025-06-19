@@ -3,9 +3,18 @@
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
-import About from './pages/About'; // adjust path as needed
+import About from './pages/About'; 
 import Feedback from './pages/Feedback';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminDashboard from './pages/adminUI';
+import './App.css';
+import UserHomePage from './pages/userHome';
+import Login from './pages/login';
+import Register from './pages/register';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PrivateRoute from './components/privateroute';
+import Logout from './pages/logout';
+
 import FeedbackList from './pages/FeedbackList';
 
 function App() {
