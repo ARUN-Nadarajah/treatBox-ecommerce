@@ -6,6 +6,8 @@ import Contact from './pages/Contact';
 import About from './pages/About'; // adjust path as needed
 import Feedback from './pages/Feedback';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import FeedbackList from './pages/FeedbackList';
+
 function App() {
   return (
     <Routes>
@@ -14,6 +16,8 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/about" element={<About />} />
       <Route path="/feedback" element={<Feedback />} />
+      <Route path="/feedback-list" element={<FeedbackList />} /> {/* Admin/User page */}
+      <Route path="/product/:name" element={<ProductDetails />} />
     </Routes>
   );
 }

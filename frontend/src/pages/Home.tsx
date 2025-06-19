@@ -31,11 +31,17 @@ const classicCakes = [
   { name: "Mocha Cake", price: 2050, image: "https://www.divine.lk/cdn/shop/products/Date_Cake_with_Butterscotch_Topping_360x.JPG?v=1560022316" },
   { name: "Ribbon Cake", price: 1900, image: "https://www.divine.lk/cdn/shop/products/Ribbon_Cake_1024x1024@2x.JPG?v=1560022345" },
 ];
+interface Product {
+  name: string;
+  price: number;
+  image: string;
+}
+
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const handleClick = (product) => {
+  const handleClick = (product: Product) => {
     navigate(`/product/${encodeURIComponent(product.name)}`, { state: product });
   };
 
@@ -49,7 +55,7 @@ const Home = () => {
           <li><Link to="/products" className="hover:text-rose-900">Products</Link></li>
           <li><Link to="/about" className="hover:text-rose-900">About</Link></li>
           <li><Link to="/contact" className="hover:text-rose-900">Contact</Link></li>
-          <li><Link to="/feedback" className="hover:text-rose-900">feedback</Link></li>
+          <li><Link to="/feedback" className="hover:text-rose-900">Feedback</Link></li>
         </ul>
       </nav>
 
