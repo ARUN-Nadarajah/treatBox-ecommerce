@@ -11,55 +11,58 @@ interface Feedback {
 }
 
 const FeedbackList = () => {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]); // ✅ typed array
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
 
   useEffect(() => {
     fetch('http://localhost:5001/api/feedback')
       .then((res) => res.json())
-      .then((data: Feedback[]) => setFeedbacks(data)) // ✅ assert response type
+      .then((data: Feedback[]) => setFeedbacks(data))
       .catch((err) => console.error('Failed to fetch feedback:', err));
   }, []);
 
   return (
-    <div className="min-h-screen bg-white p-10">
-      <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">All Feedback</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-pink-200 rounded-xl shadow-md">
-          <thead>
-            <tr className="bg-pink-100 text-pink-700 text-left">
-              <th className="p-4 border-b">#</th>
-              <th className="p-4 border-b">Name</th>
-              <th className="p-4 border-b">Email</th>
-              <th className="p-4 border-b">Phone</th>
-              <th className="p-4 border-b">Feedback</th>
-              <th className="p-4 border-b">Rating</th>
-              <th className="p-4 border-b">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {feedbacks.length > 0 ? (
-              feedbacks.map((fb, index) => (
-                <tr key={fb._id} className="hover:bg-pink-50 transition">
-                  <td className="p-4 border-b">{index + 1}</td>
-                  <td className="p-4 border-b">{fb.name}</td>
-                  <td className="p-4 border-b">{fb.email}</td>
-                  <td className="p-4 border-b">{fb.phone}</td>
-                  <td className="p-4 border-b">{fb.feedback}</td>
-                  <td className="p-4 border-b text-yellow-500">{'★'.repeat(fb.rating)}</td>
-                  <td className="p-4 border-b">
-                    {new Date(fb.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={7} className="text-center p-6 text-gray-500">
-                  No feedback submitted yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <div
+      className="min-h-screen bg-fixed bg-no-repeat bg-cover px-4 py-16"
+      style={{
+        backgroundImage: `url('https://img.freepik.com/free-vector/pastel-watercolor-abstract-background_23-2148902772.jpg')`,
+      }}
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="sticky top-0 bg-white/80 backdrop-blur-md p-6 rounded-xl mb-8 shadow-md">
+          <h2 className="text-4xl font-extrabold text-center text-pink-700">
+            📝 Customer Feedback
+          </h2>
+        </div>
+
+        {feedbacks.length === 0 ? (
+          <p className="text-center text-gray-600 text-lg">
+            No feedback submitted yet.
+          </p>
+        ) : (
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {feedbacks.map((fb, index) => (
+              <div
+                key={fb._id}
+                className="bg-white shadow-lg border border-rose-100 p-6 rounded-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-pink-200"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-bold text-rose-600">{fb.name}</h3>
+                  <span className="text-yellow-500 text-sm">
+                    {'★'.repeat(fb.rating)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-400 mb-2">
+                  {new Date(fb.createdAt).toLocaleDateString()}
+                </p>
+                <p className="text-gray-800 mb-4">"{fb.feedback}"</p>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p><strong>Email:</strong> {fb.email}</p>
+                  <p><strong>Phone:</strong> {fb.phone}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
