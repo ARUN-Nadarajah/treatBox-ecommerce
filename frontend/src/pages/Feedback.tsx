@@ -1,6 +1,7 @@
 import type { ChangeEvent, FormEvent} from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../components/NavBar";
 type FeedbackForm = {
   name: string;
   email: string;
@@ -103,7 +104,16 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-8">
+    <>
+      <NavBar />
+    <div className="relative min-h-screen flex items-center justify-center p-8"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1470&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}>
        {/* 🔙 Back Button */}
       <button
         onClick={() => navigate(-1)}
@@ -188,6 +198,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

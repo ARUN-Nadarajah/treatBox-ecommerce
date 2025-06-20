@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import axios from "axios";
 
 interface User {
+  id?: string;
   firstName: string;
   lastName: string;
   username: string;
@@ -14,8 +16,15 @@ interface User {
   image?: string;
 }
 
+interface UpdateResponse {
+  success: boolean;
+  message: string;
+  customer: User;
+}
+
 const EditProfile: React.FC = () => {
   const navigate = useNavigate();
+
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<User>({
     firstName: "",
@@ -38,21 +47,45 @@ const EditProfile: React.FC = () => {
     }
   }, []);
 
-  if (!user) return <div className="text-center mt-20 text-gray-500">Loading...</div>;
+  if (!user)
+    return (
+      <div className="text-center mt-20 text-gray-500">Loading profile...</div>
+    );
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save updated user to localStorage
-    localStorage.setItem("user", JSON.stringify(formData));
-    // Navigate back to profile
-    navigate("/profile");
+
+    if (!formData.id) {
+      alert("User ID not found. Please log in again.");
+      return;
+    }
+
+    try {
+      const res = await axios.put<UpdateResponse>(
+        `http://localhost:5001/api/users/${formData.id}`,
+        formData
+      );
+
+      if (res.data.success) {
+        localStorage.setItem("user", JSON.stringify(res.data.customer));
+        alert("Profile updated successfully!");
+        navigate("/profile");
+      } else {
+        alert(res.data.message || "Failed to update profile.");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("An error occurred while updating the profile.");
+    }
   };
 
   return (
@@ -74,7 +107,10 @@ const EditProfile: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6 text-gray-900">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="firstName" className="block font-semibold mb-1">
+                <label
+                  htmlFor="firstName"
+                  className="block font-semibold mb-1"
+                >
                   First Name
                 </label>
                 <input
@@ -104,7 +140,10 @@ const EditProfile: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="username" className="block font-semibold mb-1">
+                <label
+                  htmlFor="username"
+                  className="block font-semibold mb-1"
+                >
                   Username (cannot change)
                 </label>
                 <input

@@ -43,9 +43,9 @@ const Contact = () => {
     <>
       <NavBar />
       <div
-        className="min-h-screen px-6 py-16 bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 bg-cover bg-no-repeat bg-center"
+        className="relative min-h-screen px-6 py-16 bg-cover bg-no-repeat bg-center flex items-center justify-center"
         style={{
-          backgroundImage: `url('https://hubspot-knowledge.s3.amazonaws.com/hubfs/contact-us-2-20250115-1824456.webp')`,
+          backgroundImage: `url('https://th.bing.com/th/id/R.73ae12bd2d6b59ee62d5b4f4b623d658?rik=OPFOsWRNsjBfaw&pid=ImgRaw&r=0')`,
         }}
       >
         <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-rose-200 p-10">
@@ -62,7 +62,9 @@ const Contact = () => {
             {/* Contact Info */}
             <div className="space-y-8 text-gray-800">
               <div className="flex items-start space-x-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition">
-                <FaEnvelope className="text-2xl text-rose-600 mt-1" />
+                <span className="text-2xl text-rose-600 mt-1">
+                  <FaEnvelope />
+                </span>
                 <div>
                   <h4 className="font-semibold text-xl">Email Us</h4>
                   <p>support@treatbox.com</p>
@@ -71,7 +73,9 @@ const Contact = () => {
               </div>
 
               <div className="flex items-start space-x-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition">
-                <FaPhoneAlt className="text-2xl text-rose-600 mt-1" />
+                <span className="text-2xl text-rose-600 mt-1">
+                  <FaPhoneAlt />
+                </span>
                 <div>
                   <h4 className="font-semibold text-xl">Call / WhatsApp</h4>
                   <p>+94 77 123 4567</p>
@@ -79,7 +83,9 @@ const Contact = () => {
               </div>
 
               <div className="flex items-start space-x-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition">
-                <FaMapMarkerAlt className="text-2xl text-rose-600 mt-1" />
+                <span className="text-2xl text-rose-600 mt-1">
+                  <FaMapMarkerAlt />
+                </span>
                 <div>
                   <h4 className="font-semibold text-xl">Visit Us</h4>
                   <p>TreatBox HQ, Kakkaitivu, Jaffna, Sri Lanka</p>
@@ -87,9 +93,15 @@ const Contact = () => {
               </div>
 
               <div className="flex space-x-6 mt-4 text-rose-700 text-xl">
-                <FaFacebook className="hover:scale-125 transition" />
-                <FaInstagram className="hover:scale-125 transition" />
-                <FaTwitter className="hover:scale-125 transition" />
+                <span className="hover:scale-125 transition">
+                  <FaFacebook />
+                </span>
+                <span className="hover:scale-125 transition">
+                  <FaInstagram />
+                </span>
+                <span className="hover:scale-125 transition">
+                  <FaTwitter />
+                </span>
               </div>
             </div>
 

@@ -1,84 +1,85 @@
-import React from 'react';
-import NavBar from '../components/NavBar';
+import React from "react";
+import NavBar from "../components/NavBar";
 
 const About = () => {
   return (
     <>
-    <NavBar/>
-    <div className="bg-gradient-to-br from-pink-50 via-white to-pink-100 min-h-screen py-20 px-6 md:px-16">
-      {/* Header */}
-      <div className="text-center mb-20">
-        <h1 className="text-5xl md:text-6xl font-bold text-pink-700 drop-shadow-sm animate-fade-in">
-          About <span className="text-pink-500">TreatBox</span>
-        </h1>
-        <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-          Discover the heart of our bakery, where passion, creativity, and flavor come together.
-        </p>
+      <NavBar />
+      {/* Banner Hero */}
+      <div
+        className="relative h-[60vh] bg-cover bg-center flex items-center justify-center"
+        style={{
+          backgroundImage:
+            "url('https://th.bing.com/th/id/OIP.qHT5z58aLlArMeBbArWeLAHaER?rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3')",
+        }}
+      >
+        <div className="absolute inset-0 bg-rose-700/50 backdrop-blur-sm" />
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-5xl font-bold mb-3">About TreatBox</h1>
+          <p className="text-lg max-w-2xl mx-auto">
+            A sweet story behind every dessert. Freshly made, beautifully delivered.
+          </p>
+        </div>
       </div>
 
-      {/* Main Container */}
-      <div className="flex flex-col md:flex-row items-center gap-10 bg-white bg-opacity-70 backdrop-blur-lg rounded-3xl shadow-2xl p-10 animate-slide-in-up">
-        {/* Image */}
-        <div className="w-full md:w-1/2">
+      {/* About Content */}
+      <section className="bg-gradient-to-br from-pink-50 via-white to-rose-100 py-16 px-6 md:px-20">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Image */}
           <img
-            src="https://i.pinimg.com/736x/e4/e4/19/e4e41929d76c910ca692996928166bcf.jpg"
-            alt="About TreatBox"
-            className="rounded-3xl w-full object-cover shadow-md hover:shadow-2xl transition-all duration-500"
+            src="https://th.bing.com/th/id/OIP.uPOGj7M5WrV0gBBBAmWv6gHaFj?rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3"
+            alt="Bakery"
+            className="rounded-3xl shadow-xl w-full object-cover"
           />
-        </div>
 
-        {/* Text Content */}
-        <div className="w-full md:w-1/2 text-gray-700 space-y-6">
-          <h2 className="text-3xl font-extrabold text-pink-600">
-            Our Sweet Journey 🍰
-          </h2>
-          <p className="text-md leading-relaxed">
-            TreatBox started as a dream to share joy through homemade sweets. Today, we blend love and flavor to craft irresistible treats
-            for every celebration.
-          </p>
-          <p className="text-sm text-gray-500 italic">
-            “Every bite tells a story of tradition, quality, and care.”
-          </p>
-          <button className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all duration-300">
-            Learn More
-          </button>
+          {/* Text */}
+          <div className="text-gray-700 space-y-5">
+            <h2 className="text-3xl font-extrabold text-rose-600">Our Story</h2>
+            <p>
+              From a cozy kitchen in Kakkaitivu to delivering across the island, TreatBox
+              was founded with love, flour, and a dream to spread happiness through desserts.
+            </p>
+            <p className="text-sm text-gray-500 italic">
+              “Crafted with care. Served with a smile.”
+            </p>
+            <button className="mt-3 px-6 py-2 bg-rose-500 text-white rounded-full shadow hover:bg-rose-600 transition">
+              Read More
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Feature Section */}
-      <div className="mt-24 text-center">
-        <h3 className="text-3xl font-semibold text-pink-700 mb-6">
-          Why Choose Us?
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 px-4 sm:px-10 lg:px-20">
+      {/* Why Choose Us */}
+      <section className="bg-white py-20 text-center">
+        <h3 className="text-3xl font-bold text-rose-700 mb-10">Why Choose Us?</h3>
+        <div className="max-w-5xl mx-auto grid gap-8 sm:grid-cols-2 md:grid-cols-4 px-4">
           {[
-            { icon: '🎂', title: 'Custom Cakes', text: 'Your design, our flavor.' },
-            { icon: '🍪', title: 'Fresh Daily', text: 'Baked every morning.' },
-            { icon: '🧁', title: 'Artisan Touch', text: 'Crafted with love & care.' },
-            { icon: '🚚', title: 'Fast Delivery', text: 'Bringing sweetness to you.' },
-          ].map((feature, idx) => (
+            { icon: "🎂", title: "Custom Cakes", desc: "Your style, our flavor." },
+            { icon: "🍪", title: "Daily Fresh", desc: "Every batch made with love." },
+            { icon: "📦", title: "Safe Packaging", desc: "Neat. Secure. Beautiful." },
+            { icon: "🚚", title: "Island Delivery", desc: "From Jaffna to Galle." },
+          ].map((item, i) => (
             <div
-              key={idx}
-              className="bg-white rounded-xl p-6 shadow-md hover:shadow-2xl transition duration-300 flex flex-col items-center"
+              key={i}
+              className="bg-pink-50 rounded-2xl p-6 shadow hover:shadow-md transition"
             >
-              <div className="text-3xl">{feature.icon}</div>
-              <h4 className="text-lg font-bold mt-2">{feature.title}</h4>
-              <p className="text-sm text-gray-600">{feature.text}</p>
+              <div className="text-4xl">{item.icon}</div>
+              <h4 className="text-lg font-semibold text-rose-600 mt-2">
+                {item.title}
+              </h4>
+              <p className="text-sm text-gray-600 mt-1">{item.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Footer CTA */}
-      <div className="mt-20 text-center">
-        <h4 className="text-xl font-semibold text-gray-700">
-          Ready to taste the TreatBox magic?
-        </h4>
-        <button className="mt-4 px-8 py-3 bg-gradient-to-r from-pink-400 to-pink-600 text-white rounded-full font-semibold hover:scale-105 transition-transform duration-300">
-          Visit Our Products
+      {/* Final CTA */}
+      <section className="bg-gradient-to-r from-rose-400 to-pink-500 text-white text-center py-16 px-6">
+        <h4 className="text-2xl font-semibold">Experience the TreatBox Magic</h4>
+        <button className="mt-4 bg-white text-rose-600 font-bold px-8 py-3 rounded-full hover:scale-105 transition">
+          Browse Products
         </button>
-      </div>
-    </div>
+      </section>
     </>
   );
 };

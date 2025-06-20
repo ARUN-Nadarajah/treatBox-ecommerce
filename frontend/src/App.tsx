@@ -58,6 +58,7 @@ function App() {
         } />
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </>
   );

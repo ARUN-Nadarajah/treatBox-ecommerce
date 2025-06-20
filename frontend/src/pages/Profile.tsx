@@ -16,10 +16,20 @@ interface User {
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) setUser(JSON.parse(data));
-  }, []);
+ useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsed = JSON.parse(storedUser);
+    fetch(`http://localhost:5000/api/users/${parsed._id}`)
+      .then(res => res.json())
+      .then(data => setUser(data))
+      .catch(err => {
+        console.error("Failed to fetch user data:", err);
+        setUser(parsed); // fallback
+      });
+  }
+}, []);
+
 
   if (!user)
     return <div className="text-center mt-20 text-gray-400">Loading profile...</div>;
