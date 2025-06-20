@@ -15,6 +15,8 @@ import Logout from './pages/logout';
 import CustomerManager from './pages/customermanager';
 import FeedbackAdmin from './pages/FeedbackList';
 import AdminContactList from './pages/AdminContactList';
+import Profile from './pages/Profile';
+import EditProfile from "./pages/EditProfile";
 
 
 function App() {
@@ -54,6 +56,8 @@ function App() {
         <Route path="/admin/messages" element={
           <PrivateRoute adminOnly={true}><AdminContactList /></PrivateRoute>
         } />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </>
   );
