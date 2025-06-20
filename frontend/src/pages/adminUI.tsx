@@ -2,6 +2,7 @@ import Sidebar from "../components/adminSidebar";
 import Header from "../components/header";
 import DashboardCards from "../components/dashboardCards";
 import ProductTable from "../components/productTable";
+import ContactTable from "../components/ContactTable"; // ✅ import
 
 export default function AdminDashboard() {
   return (
@@ -11,6 +12,7 @@ export default function AdminDashboard() {
         <Header />
         <DashboardCards />
         <ProductTable />
+         <ContactTable /> {/* ✅ Show contact messages */}
       </div>
     </div>
   );

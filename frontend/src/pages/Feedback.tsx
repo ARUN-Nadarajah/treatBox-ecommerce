@@ -1,5 +1,6 @@
-import type { ChangeEvent, FormEvent } from "react";
-import { useState } from "react";
+import type { ChangeEvent, FormEvent} from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 type FeedbackForm = {
   name: string;
   email: string;
@@ -16,46 +17,100 @@ const Feedback = () => {
     feedback: "",
     rating: 0,
   });
+
+    const [errors, setErrors] = useState<Partial<FeedbackForm>>({});
+
   const [submitted, setSubmitted] = useState(false);
 
+   // ✅ Auto-fill name and email from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setForm((prev) => ({
+        ...prev,
+        email: user.email || ''
+      }));
+    }
+  }, []);
+
+const validate = (): Partial<FeedbackForm> => {
+    const newErrors: Partial<FeedbackForm> = {};
+    if (form.name.trim().length < 3) newErrors.name = "Name must be at least 3 characters.";
+    if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = "Enter a valid email.";
+    if (!/^\d{10}$/.test(form.phone)) newErrors.phone = "Phone must be exactly 10 digits.";
+    if (form.feedback.trim().length < 10) newErrors.feedback = "Feedback must be at least 10 characters.";
+    
+    return newErrors;
+  };
+
   // Typed event handler for inputs and textarea
+const navigate = useNavigate();
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   // Explicit number parameter type for rating handler
   const handleRating = (stars: number) => {
     setForm((prev) => ({ ...prev, rating: stars }));
+    setErrors((prev) => ({ ...prev, rating: undefined }));
   };
 
+   
+
   // Typed form submit handler
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-  setSubmitted(true);
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
   try {
-    const res = await fetch("http://localhost:5001/api/feedback", {
-      method: "POST",
+    const response = await fetch('http://localhost:5001/api/feedback', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(form),
     });
 
-    if (!res.ok) throw new Error("Failed to submit feedback");
+    if (!response.ok) {
+      throw new Error('Failed to submit feedback');
+    }
 
+    setSubmitted(true);
     alert("Thank you for your feedback!");
-  } catch (err) {
-    console.error(err);
-    alert("An error occurred. Please try again.");
-  } finally {
-    setSubmitted(false);
+    setTimeout(() => {
+      setSubmitted(false);
+      setForm({
+        name: "",
+        email: form.email,
+        phone: '',
+        feedback: '',
+        rating: 0,
+      });
+    }, 4000);
+  } catch (error) {
+    alert("Something went wrong. Please try again.");
+    console.error('Submit error:', error);
   }
 };
 
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-8">
+       {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
+      >
+        ← Back
+      </button>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white/80 backdrop-blur-md rounded-2xl shadow-md p-10 space-y-10 border border-pink-100"
@@ -73,9 +128,13 @@ const Feedback = () => {
               type={field === "phone" ? "tel" : field}
               value={form[field as keyof FeedbackForm] as string}
               onChange={handleChange}
+              readOnly={field === "email"} // 👈 read-only for auto-filled fields
               className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700"
               required
             />
+            {errors[field as keyof FeedbackForm] && (
+              <span className="text-sm text-red-500">{errors[field as keyof FeedbackForm]}</span>
+            )}
           </div>
         ))}
 
@@ -89,10 +148,17 @@ const Feedback = () => {
             rows={4}
             value={form.feedback}
             onChange={handleChange}
-            className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700 resize-none"
+           className={`rounded-md px-4 py-2 border ${
+              errors.feedback ? "border-red-500" : "border-pink-200"
+            } focus:outline-none focus:ring-2 ${
+              errors.feedback ? "focus:ring-red-300" : "focus:ring-pink-300"
+            } text-gray-700 resize-none`}
             required
           />
+          {errors.feedback && <p className="text-sm text-red-500">{errors.feedback}</p>}
         </div>
+
+        {/* Rating */}
 
         <div className="flex flex-col items-center gap-2">
           <label className="text-pink-600 font-semibold">Rating</label>
@@ -110,6 +176,7 @@ const Feedback = () => {
               </button>
             ))}
           </div>
+         {errors.feedback && <p className="text-sm text-red-500">{errors.feedback}</p>}
         </div>
 
         <button

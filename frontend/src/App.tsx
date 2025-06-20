@@ -14,11 +14,13 @@ import PrivateRoute from './components/privateroute';
 import Logout from './pages/logout';
 import CustomerManager from './pages/customermanager';
 import FeedbackAdmin from './pages/FeedbackList';
+import AdminContactList from './pages/AdminContactList';
+
 
 function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer aria-label="Notification Area" />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
@@ -44,11 +46,13 @@ function App() {
         <Route path="/contact" element={
           <PrivateRoute><Contact /></PrivateRoute>
         } />
-        <Route path="/about" element={
-          <PrivateRoute><About /></PrivateRoute>
-        } />
+         {/* Add this route for /admin/contacts */}
+        <Route path="/admin/contacts" element={<AdminContactList />} />
         <Route path="/feedback" element={
           <PrivateRoute><Feedback /></PrivateRoute>
+        } />
+        <Route path="/admin/messages" element={
+          <PrivateRoute adminOnly={true}><AdminContactList /></PrivateRoute>
         } />
       </Routes>
     </>

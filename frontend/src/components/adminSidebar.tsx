@@ -18,6 +18,15 @@ export default function Sidebar() {
           📝 feedbacks
         </li>
         </Link>
+
+       <Link to="/admin/contacts">
+  <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">
+    📬 Contact Messages
+  </li>
+</Link>
+
+
+
         <Link to="/admin/customers">
           <li className="hover:text-white hover:bg-pink-400 p-2 rounded-lg cursor-pointer">
             👥 Customers
