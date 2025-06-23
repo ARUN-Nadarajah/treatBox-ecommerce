@@ -50,7 +50,7 @@ const Contact = () => {
       <div
         className="relative min-h-screen px-6 py-16 bg-cover bg-no-repeat bg-center flex items-center justify-center"
         style={{
-          backgroundImage: `url('https://th.bing.com/th/id/R.73ae12bd2d6b59ee62d5b4f4b623d658?rik=OPFOsWRNsjBfaw&pid=ImgRaw&r=0')`,
+          backgroundImage: `url('https://www.itl.cat/pngfile/big/192-1926151_background-images-for-bakery-website.jpg')`,
         }}
       >
         <button

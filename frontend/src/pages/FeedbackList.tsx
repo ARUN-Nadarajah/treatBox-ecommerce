@@ -29,7 +29,7 @@ const FeedbackList = () => {
         className="flex min-h-screen bg-fixed bg-no-repeat bg-cover"
         style={{
           backgroundImage:
-            "url('https://img.freepik.com/free-vector/pastel-watercolor-abstract-background_23-2148902772.jpg')",
+            "url('https://tint.creativemarket.com/tmKDbc3Hqhfq-K27jRymqsUmsxjXEgcLAimbgwcN_MQ/width:910/height:607/gravity:ce/rt:fill-down/el:1/preset:cm_watermark_retina/czM6Ly9maWxlcy5jcmVhdGl2ZW1hcmtldC5jb20vaW1hZ2VzL3NjcmVlbnNob3RzL3Byb2R1Y3RzLzE0OS8xNDkxLzE0OTEzNzkvMTYwNl9iYWtlcnktMXNjcmVlbi1vLmpwZw')",
         }}
       >
         {/* Sidebar */}

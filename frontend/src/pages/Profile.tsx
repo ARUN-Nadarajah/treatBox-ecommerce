@@ -16,83 +16,76 @@ interface User {
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
 
- useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-  if (storedUser) {
-    const parsed = JSON.parse(storedUser);
-    fetch(`http://localhost:5000/api/users/${parsed._id}`)
-      .then(res => res.json())
-      .then(data => setUser(data))
-      .catch(err => {
-        console.error("Failed to fetch user data:", err);
-        setUser(parsed); // fallback
-      });
-  }
-}, []);
-
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      fetch(`http://localhost:5000/api/users/${parsed._id}`)
+        .then((res) => res.json())
+        .then((data) => setUser(data))
+        .catch((err) => {
+          console.error("Failed to fetch user data:", err);
+          setUser(parsed); // fallback
+        });
+    }
+  }, []);
 
   if (!user)
-    return <div className="text-center mt-20 text-gray-400">Loading profile...</div>;
+    return (
+      <div className="text-center mt-20 text-gray-500 text-lg">
+        Loading profile...
+      </div>
+    );
 
   return (
     <>
       <NavBar />
       <div
-        className="min-h-screen flex items-center justify-center px-6 py-20"
+        className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-6 py-20"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1470&q=80')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+            "url('https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL3Jhd3BpeGVsX29mZmljZV81OF9waG90b19vZl9iYWtlcnlfc2hvcF9uYXR1cmFsaXN0aWNfYWVzdGhldGljX2RkNjk2NWZlLTcxZmUtNDU5ZC1iZGIwLWMzMDUxNmVlOGMxM18xLmpwZw.jpg')",
         }}
       >
-        {/* Frosted glass card */}
-        <div className="relative max-w-5xl w-full bg-white/30 backdrop-blur-lg rounded-3xl shadow-lg border border-white/30 p-12 flex flex-col md:flex-row items-center text-gray-900">
+        {/* Profile Card */}
+        <div className="relative max-w-5xl w-full bg-white/40 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-10 flex flex-col md:flex-row items-center gap-8 z-10">
           {/* Profile Image */}
-          <div className="md:w-1/3 flex justify-center mb-8 md:mb-0">
+          <div className="md:w-1/3 flex justify-center">
             <img
               src={user.image || "https://via.placeholder.com/160"}
               alt="Profile"
-              className="w-40 h-40 rounded-full border-4 border-pink-300 shadow-lg object-cover"
+              className="w-40 h-40 rounded-full border-4 border-white shadow-lg object-cover hover:scale-105 transition-transform duration-300"
             />
           </div>
 
-          {/* Info */}
-          <div className="md:w-2/3 md:pl-14">
-            <h1 className="text-4xl font-extrabold mb-3 text-pink-600">
+          {/* Profile Info */}
+          <div className="md:w-2/3 w-full">
+            <h1 className="text-4xl font-extrabold text-gray-800">
               {user.firstName} {user.lastName}
             </h1>
-            <p className="text-lg mb-6 text-pink-400">@{user.username}</p>
+            <p className="text-pink-600 text-lg font-medium mb-6">
+              @{user.username}
+            </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-700 text-[17px]">
               <div>
-                <p className="font-semibold flex items-center gap-2">
-                  📧 Email:
-                </p>
-                <p className="break-words">{user.email}</p>
+                <p className="font-semibold">📧 Email</p>
+                <p className="text-gray-900">{user.email}</p>
               </div>
               <div>
-                <p className="font-semibold flex items-center gap-2">
-                  📱 Phone:
-                </p>
+                <p className="font-semibold">📱 Phone</p>
                 <p>{user.number}</p>
               </div>
               <div>
-                <p className="font-semibold flex items-center gap-2">
-                  🎂 DOB:
-                </p>
+                <p className="font-semibold">🎂 Date of Birth</p>
                 <p>{user.DOB}</p>
               </div>
               <div>
-                <p className="font-semibold flex items-center gap-2">
-                  🏠 Address:
-                </p>
-                <p className="break-words">{user.address}</p>
+                <p className="font-semibold">🏠 Address</p>
+                <p>{user.address}</p>
               </div>
               <div>
-                <p className="font-semibold flex items-center gap-2">
-                  👤 Gender:
-                </p>
+                <p className="font-semibold">👤 Gender</p>
                 <p>{user.gender}</p>
               </div>
             </div>
@@ -100,9 +93,9 @@ const Profile: React.FC = () => {
             <div className="mt-10">
               <a
                 href="/edit-profile"
-                className="inline-block bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-8 rounded-full shadow-md transition"
+                className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-8 rounded-full shadow-md transition-transform hover:scale-105"
               >
-                Edit Profile
+                ✏️ Edit Profile
               </a>
             </div>
           </div>
