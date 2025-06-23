@@ -8,13 +8,13 @@ const router = express.Router();
 // POST /api/contact
 router.post('/', async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    const { username, email, message } = req.body;
 
-    if (!name || !email || !message) {
+    if (!username || !email || !message) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const contact = new Contact({ name, email, message });
+    const contact = new Contact({ username, email, message });
     await contact.save();
 
     res.status(201).json({ message: 'Message sent successfully' });

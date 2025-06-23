@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 type FeedbackForm = {
   username: string;
   email: string;
-  phone: string;
+  number: string;
   feedback: string;
   rating: number;
 };
@@ -15,7 +15,7 @@ const Feedback = () => {
   const [form, setForm] = useState<FeedbackForm>({
     username: "",
     email: "",
-    phone: "",
+    number: "",
     feedback: "",
     rating: 0,
   });
@@ -24,8 +24,10 @@ const Feedback = () => {
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  // Auto-fill username and email from localStorage
+  // Auto-fill username, email, and phone from localStorage
   useEffect(() => {
+    console.log("Stored user:", localStorage.getItem("user"));
+
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
@@ -33,6 +35,7 @@ const Feedback = () => {
         ...prev,
         username: user.username || "",
         email: user.email || "",
+        phone: user.number  || "",
       }));
     }
   }, []);
@@ -43,8 +46,8 @@ const Feedback = () => {
       newErrors.username = "Username must be at least 3 characters.";
     if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Enter a valid email.";
-    if (!/^\d{10}$/.test(form.phone))
-      newErrors.phone = "Phone must be exactly 10 digits.";
+    if (!/^\d{10}$/.test(form.number))
+      newErrors.number = "Phone must be exactly 10 digits.";
     if (form.feedback.trim().length < 10)
       newErrors.feedback = "Feedback must be at least 10 characters.";
     return newErrors;
@@ -87,7 +90,7 @@ const Feedback = () => {
         setForm({
           username: form.username,
           email: form.email,
-          phone: "",
+          number: form.number,
           feedback: "",
           rating: 0,
         });
@@ -111,13 +114,12 @@ const Feedback = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
         >
           ← Back
-        </button>
+        </button> 
 
         <form
           onSubmit={handleSubmit}
@@ -139,7 +141,7 @@ const Feedback = () => {
                 type={field === "phone" ? "tel" : "text"}
                 value={form[field as keyof FeedbackForm] as string}
                 onChange={handleChange}
-                readOnly={field === "username" || field === "email"}
+                readOnly={field === "username" || field === "email" || field === "phone"}
                 className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700"
                 required
               />

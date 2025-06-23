@@ -1,19 +1,24 @@
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import NavBar from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
+
 
 const Contact = () => {
-  const [name, setName] = useState("");
+  const [username, setName] = useState("");
   const [email, setEmail] = useState("");
 
   // Get user info from localStorage
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user) {
-      setName(user.name || "");
+      setName(user.username || "");
       setEmail(user.email || "");
     }
   }, []);
+
+    const navigate = useNavigate();
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +29,7 @@ const Contact = () => {
       const res = await fetch("http://localhost:5001/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ username, email, message }),
       });
 
       if (res.ok) {
@@ -48,6 +53,13 @@ const Contact = () => {
           backgroundImage: `url('https://th.bing.com/th/id/R.73ae12bd2d6b59ee62d5b4f4b623d658?rik=OPFOsWRNsjBfaw&pid=ImgRaw&r=0')`,
         }}
       >
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
+        >
+          ← Back    
+        </button>
+
         <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-rose-200 p-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-extrabold text-rose-700 drop-shadow">
@@ -114,15 +126,15 @@ const Contact = () => {
               <div className="relative z-0 w-full group">
                 <input
                   type="text"
-                  name="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  name="username"
+                  value={username}
+                  readOnly
                   required
                   className="block py-3 px-0 w-full text-md text-gray-800 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-rose-500 peer"
                   placeholder=" "
                 />
                 <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2 z-10 origin-[0] left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-3 peer-focus:scale-75 peer-focus:-translate-y-6">
-                  Full Name
+                  User Name
                 </label>
               </div>
 
