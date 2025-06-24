@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import axios from "axios";
 
+
 interface User {
   id?: string;
   firstName: string;
@@ -24,7 +25,6 @@ interface UpdateResponse {
 }
 
 const EditProfile: React.FC = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<User>({
     firstName: "",
@@ -50,6 +50,9 @@ const EditProfile: React.FC = () => {
       setFormData(parsed);
     }
   }, []);
+  
+    const navigate = useNavigate();
+
 
   if (!user)
     return <div className="text-center mt-20 text-gray-500">Loading profile...</div>;
@@ -113,10 +116,17 @@ const EditProfile: React.FC = () => {
         className="min-h-screen bg-fixed bg-center bg-cover flex items-center justify-center"
         style={{
           backgroundImage:
-            "url('https://th.bing.com/th/id/OIP.yIxHbHGcQpP1EdvjA3FH_AHaEJ?rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3')",
+            "url('https://png.pngtree.com/background/20230522/original/pngtree-3d-bakery-cafe-design-with-coffee-tables-picture-image_2690236.jpg')",
         }}
       >
+        
         <div className="bg-white/30 backdrop-blur-lg rounded-3xl p-10 max-w-3xl w-full mx-4 shadow-xl border border-white/40">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
+        >
+          ← Back    
+        </button>
           <h2 className="text-4xl font-bold text-center text-rose-700 mb-6">
             Edit Profile
           </h2>

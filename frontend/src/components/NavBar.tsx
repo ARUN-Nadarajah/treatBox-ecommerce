@@ -9,6 +9,8 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const baseNavigation = [
   { name: "Home", href: "/" },
@@ -23,16 +25,12 @@ function classNames(...classes: string[]) {
 }
 
 const NavBar: React.FC = () => {
-  // Read user from localStorage (null if not logged in)
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const isLoggedIn = !!user;
   const isAdmin = user?.role === "admin";
 
-  // Build navigation links array dynamically
-  // Add Admin Login if NOT logged in
-  // Add Admin Dashboard if user is admin
   const navigation = [...baseNavigation];
   if (!isLoggedIn) {
     navigation.push({ name: "Admin Login", href: "/admin" });
@@ -40,6 +38,48 @@ const NavBar: React.FC = () => {
   if (isAdmin) {
     navigation.push({ name: "Admin Dashboard", href: "/admin" });
   }
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      // Initial fetch
+      axios
+        .get("http://localhost:5001/api/notifications")
+        .then((res) => {
+          setNotifications(Array.isArray(res.data) ? res.data : []);
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            console.error("Failed to load notifications:", err.message);
+          } else {
+            console.error("Unknown error while loading notifications:", err);
+          }
+        });
+
+      // Polling for updates
+      const interval = setInterval(() => {
+        if (localStorage.getItem("new_notification") === "true") {
+          axios
+            .get("http://localhost:5001/api/notifications")
+            .then((res) => {
+              setNotifications(Array.isArray(res.data) ? res.data : []);
+              localStorage.removeItem("new_notification");
+            })
+            .catch((err) => {
+              if (err instanceof Error) {
+                console.error("Failed to refresh notifications:", err.message);
+              } else {
+                console.error("Unknown error:", err);
+              }
+            });
+        }
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn]);
 
   return (
     <Disclosure as="nav" className="bg-rose-100 shadow-md sticky top-0 z-50">
@@ -67,15 +107,49 @@ const NavBar: React.FC = () => {
                 ))}
               </div>
 
-              {/* Right side - Notification & Profile */}
-              <div className="flex items-center space-x-4">
-                <button
-                  type="button"
-                  className="text-rose-700 hover:text-rose-900 p-1"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" />
-                </button>
+              {/* Right side */}
+              <div className="flex items-center space-x-4 relative">
+                {/* Notification Bell */}
+                {isLoggedIn && (
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowNotifDropdown((prev) => !prev)
+                      }
+                      className="text-rose-700 hover:text-rose-900 p-1 relative"
+                    >
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" />
+                      {notifications.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                          {notifications.length}
+                        </span>
+                      )}
+                    </button>
+
+                    {showNotifDropdown && (
+                      <div className="absolute right-0 mt-2 w-72 max-h-72 overflow-y-auto bg-white rounded-md shadow-lg border z-10">
+                        <div className="py-2 text-sm text-gray-700">
+                          {notifications.length > 0 ? (
+                            notifications.map((notif, idx) => (
+                              <div
+                                key={idx}
+                                className="px-4 py-2 hover:bg-rose-50 border-b"
+                              >
+                                {notif.message}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No notifications
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Profile Dropdown */}
                 {isLoggedIn && (
@@ -134,7 +208,7 @@ const NavBar: React.FC = () => {
                   </Menu>
                 )}
 
-                {/* Mobile Menu Button */}
+                {/* Mobile Menu */}
                 <div className="md:hidden">
                   <DisclosureButton className="text-rose-700 hover:text-rose-900 focus:outline-none">
                     {open ? (

@@ -9,6 +9,7 @@ import AuthRouter from "./routes/authroutes.js";
 import UserRouter from "./routes/customerroutes.js";
 import FeedbackRouter from "./routes/feedbackRoutes.js";
 import ContactRouter from "./routes/contactRoutes.js"; // ✅ Correct ES Module import
+import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", AuthRouter);
 app.use("/api/users", UserRouter);
 app.use("/api/feedback", FeedbackRouter);
 app.use("/api/contact", ContactRouter); // ✅ Only once
+app.use('/api/notifications', notificationRoutes);
 
 // Start server
 app.listen(process.env.PORT, () => {
