@@ -8,14 +8,16 @@ import ProductRouter from "./routes/productroute.js";
 import AuthRouter from "./routes/authroutes.js";
 import UserRouter from "./routes/customerroutes.js";
 import FeedbackRouter from "./routes/feedbackRoutes.js";
-import ContactRouter from "./routes/contactRoutes.js"; // ✅ Correct ES Module import
+import ContactRouter from "./routes/contactRoutes.js"; 
+import ProductFeedbackRoutes from "./routes/productFeedbackRoutes.js";
+import OrderRouter from "./routes/orderRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://localhost:5174",
   credentials: true
 }));
 
@@ -26,7 +28,9 @@ app.use("/api/products", ProductRouter);
 app.use("/api/auth", AuthRouter);
 app.use("/api/users", UserRouter);
 app.use("/api/feedback", FeedbackRouter);
-app.use("/api/contact", ContactRouter); // ✅ Only once
+app.use("/api/contact", ContactRouter);
+app.use("/api/productFeedback", ProductFeedbackRoutes);
+app.use("/api/order",OrderRouter);
 
 // Start server
 app.listen(process.env.PORT, () => {

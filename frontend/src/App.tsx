@@ -17,6 +17,9 @@ import FeedbackAdmin from './pages/FeedbackList';
 import AdminContactList from './pages/AdminContactList';
 import Profile from './pages/Profile';
 import EditProfile from "./pages/EditProfile";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import Order from "./pages/orderPage";
+import OrderPage from './pages/orderPage';
 
 
 function App() {
@@ -45,6 +48,7 @@ function App() {
         <Route path="/product/:id" element={
           <PrivateRoute><ProductDetails /></PrivateRoute>
         } />
+        {/* <Route path="/order/:id" element={ <Order />} /> */}
         <Route path="/contact" element={
           <PrivateRoute><Contact /></PrivateRoute>
         } />
@@ -59,6 +63,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/about" element={<About />} />
+
+        <Route path="/order/:id" element={<OrderPage />} />
+
       </Routes>
     </>
   );

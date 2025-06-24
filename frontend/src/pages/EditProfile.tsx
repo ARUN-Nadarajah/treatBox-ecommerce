@@ -134,6 +134,7 @@ const EditProfile: React.FC = () => {
                       type={label === "Date of Birth" ? "date" : "text"}
                       name={name}
                       required
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       value={(formData as any)[name] as string}
                       onChange={handleChange}
                       className="w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition"
@@ -155,6 +156,7 @@ const EditProfile: React.FC = () => {
                       type={label === "Email" ? "email" : "text"}
                       name={name}
                       readOnly
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       value={(formData as any)[name] as string}
                       className="w-full p-3 rounded-lg bg-gray-200 text-gray-500 border border-gray-300 cursor-not-allowed"
                     />

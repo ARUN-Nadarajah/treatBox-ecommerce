@@ -150,7 +150,7 @@ export default function ProductManager() {
                 key={field}
                 className="border p-2 rounded"
                 placeholder={field[0].toUpperCase() + field.slice(1)}
-                value={(newProduct as any)[field]}
+                value={(newProduct as never)[field]}
                 onChange={(e) =>
                   setNewProduct({ ...newProduct, [field]: e.target.value })
                 }
@@ -223,7 +223,7 @@ export default function ProductManager() {
                             key={field}
                             className="border p-2 rounded"
                             placeholder={field}
-                            value={(editValues as any)[field] || ""}
+                            value={(editValues as never)[field] || ""}
                             onChange={(e) =>
                               setEditValues({
                                 ...editValues,

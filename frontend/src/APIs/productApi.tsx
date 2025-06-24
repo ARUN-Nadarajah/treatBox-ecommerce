@@ -7,6 +7,7 @@ const API = axios.create({
 export default API;
 
 export interface Product {
+  id: any;
   _id: string;
   name: string;
   price: number;

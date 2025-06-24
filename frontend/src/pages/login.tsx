@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import "react-toastify/dist/ReactToastify.css";
 
+
 import { loginUser } from "../APIs/authApi";
 import type { AuthResponse, LoginFormData } from "../APIs/authApi";
 
@@ -70,7 +71,9 @@ const Login: React.FC = () => {
       localStorage.setItem("token", data.token);
 
       toast.success("Login successful!");
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       data.user.role === "admin" ? navigate("/admin") : navigate("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const message =
         err?.response?.data?.message || "Login failed. Please try again.";

@@ -4,7 +4,7 @@ import axios from "axios";
 import type { Product } from "../APIs/productApi";
 
 interface Feedback {
-  id?: string;
+  _id: string;
   message: string;
   createdAt: string;
 }
@@ -17,12 +17,11 @@ export default function ProductDetails() {
   const [feedbackInput, setFeedbackInput] = useState("");
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
 
-  // ✅ Correct: reading 'id' from localStorage user object
-  const storedUser = localStorage.getItem("user");
-  const userId = storedUser ? JSON.parse(storedUser)?.id : null;
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (id) {
+      // Fetch product
       axios
         .get<{ product: Product }>(`http://localhost:5001/api/products/${id}`)
         .then((res) => {
@@ -34,24 +33,18 @@ export default function ProductDetails() {
           setLoading(false);
         });
 
+      // Fetch feedbacks
       axios
-        .get<Feedback[]>(`http://localhost:5001/api/productFeedback/product/${id}`)
+        .get<Feedback[]>(`http://localhost:5001/api/feedback/product/${id}`)
         .then((res) => setFeedbacks(res.data))
         .catch((err) => console.error("Error fetching feedbacks:", err));
     }
   }, [id]);
 
   const handleOrderClick = () => {
-    if (!product) {
-      alert("🚫 No product found");
-      return;
+    if (product && userId) {
+      navigate(`/order/${product._id}`, { state: { product, userId } });
     }
-    if (!userId) {
-      alert("🚫 No userId found in localStorage");
-      return;
-    }
-
-    navigate(`/order/${product.id}`, { state: { product, userId } });
   };
 
   const handleAddToCart = async () => {
@@ -60,7 +53,7 @@ export default function ProductDetails() {
     try {
       await axios.post("http://localhost:5001/api/cart/add", {
         userId,
-        productId: product.id,
+        productId: product._id,
         quantity: 1,
       });
       alert("🛒 Added to cart!");
@@ -75,13 +68,14 @@ export default function ProductDetails() {
     if (!feedbackInput.trim()) return;
 
     try {
-      await axios.post("http://localhost:5001/api/productFeedback", {
+      await axios.post("http://localhost:5001/api/feedback", {
         productId: id,
         message: feedbackInput.trim(),
       });
       setFeedbackInput("");
 
-      const res = await axios.get<Feedback[]>(`http://localhost:5001/api/productFeedback/product/${id}`);
+      // Reload feedbacks
+      const res = await axios.get<Feedback[]>(`http://localhost:5001/api/feedback/product/${id}`);
       setFeedbacks(res.data);
     } catch (err) {
       console.error("Feedback submit error:", err);
@@ -90,6 +84,7 @@ export default function ProductDetails() {
   };
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
+
   if (!product) return <div className="p-8 text-center text-red-600">Product not found.</div>;
 
   return (
@@ -118,6 +113,7 @@ export default function ProductDetails() {
             </p>
           </div>
 
+          {/* Buttons */}
           <div className="flex gap-4 mt-6">
             <button
               onClick={handleOrderClick}
@@ -137,6 +133,7 @@ export default function ProductDetails() {
 
       {/* Feedback Section */}
       <div className="mt-10 space-y-6">
+        {/* Feedback List */}
         <div className="bg-white p-6 rounded-xl shadow">
           <h3 className="text-xl font-semibold mb-4">Customer Feedback</h3>
           {feedbacks.length === 0 ? (
@@ -144,7 +141,7 @@ export default function ProductDetails() {
           ) : (
             <ul className="space-y-4">
               {feedbacks.map((fb) => (
-                <li key={fb.id} className="bg-gray-50 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <li key={fb._id} className="bg-gray-50 p-4 border border-gray-200 rounded-lg shadow-sm">
                   <p>{fb.message}</p>
                   <p className="text-xs text-gray-400 mt-1 italic">
                     {new Date(fb.createdAt).toLocaleString()}
@@ -155,6 +152,7 @@ export default function ProductDetails() {
           )}
         </div>
 
+        {/* Submit Feedback */}
         <form onSubmit={handleSubmitFeedback} className="bg-white p-6 rounded-xl shadow space-y-4">
           <h4 className="text-lg font-semibold">Leave Feedback</h4>
           <textarea
