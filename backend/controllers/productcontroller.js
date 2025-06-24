@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Product from "../models/productmodel.js";
+import Notification from "../models/Notification.js"; // ✅ Import the Notification model
+
 
 export const createProduct = async (req, res) => {
   const product = req.body;
@@ -11,6 +13,13 @@ export const createProduct = async (req, res) => {
   try {
     const newProduct = new Product(product);
     await newProduct.save();
+    // ✅ Save notification after product is added
+    const notification = new Notification({
+      message: `🧁 New product "${newProduct.name}" added!`,
+      productId: newProduct._id, // ✅ store productId
+      createdAt: new Date(),
+    });
+    await notification.save();
     res.status(201).json({ success: true, message: "Product is added", product: newProduct });
   } catch (error) {
     console.error(error);

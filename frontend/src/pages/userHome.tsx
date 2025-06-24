@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { fetchProducts } from "../APIs/productApi";
 import type { Product } from "../APIs/productApi";
 import NavBar from "../components/NavBar";
+// import NotificationList from "../components/NotificationList";
 
 export default function UserHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const location = useLocation();
+  const productRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     fetchProducts()
@@ -20,6 +23,20 @@ export default function UserHomePage() {
       })
       .catch((err) => console.error("Failed to fetch products", err));
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const scrollToId = params.get("scrollTo");
+
+    if (scrollToId && productRefs.current[scrollToId]) {
+      setTimeout(() => {
+        productRefs.current[scrollToId]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 500);
+    }
+  }, [products, location.search]);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -36,8 +53,8 @@ export default function UserHomePage() {
 
   return (
     <div className="font-sans text-gray-800">
-      
       <NavBar />
+
 
       {/* Hero Banner */}
       <section
@@ -77,42 +94,61 @@ export default function UserHomePage() {
           className="border border-gray-300 rounded px-4 py-2"
         >
           <option value="">All Categories</option>
-          {[...new Set(products.map(p => p.category))].map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {[...new Set(products.map((p) => p.category))].map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
       </div>
 
-      {/* Product Sections */}
-      <div className="mt-10">
-        {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
-          <section
-            key={category}
-            className={`py-16 px-6 ${category === "Classic Cakes" ? "bg-gray-50" : ""}`}
-          >
-            <h2 className="text-4xl font-extrabold text-center mb-12 text-rose-700">
-              {category}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
-              {categoryProducts.map((product) => (
-                <Link to={`/product/${product._id}`} key={product._id} className="w-full max-w-xs">
+      {/* Product Sections with Background Image */}
+      <div
+        className="mt-10 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1604908554160-dc1c54f4f8b4?auto=format&fit=crop&w=1470&q=80')`,
+          backgroundAttachment: "fixed",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="bg-white bg-opacity-80">
+          {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
+            <section
+              key={category}
+              className={`py-16 px-6 ${category === "Classic Cakes" ? "bg-gray-50" : ""}`}
+            >
+              <h2 className="text-4xl font-extrabold text-center mb-12 text-rose-700">
+                {category}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+                {categoryProducts.map((product) => (
                   <div
-                    className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6"
+                    ref={(el) => { productRefs.current[product._id] = el; }}
+                    key={product._id}
+                    className="w-full max-w-xs"
                   >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-1/ object-contain rounded-md mb-4"
-                    />
-                    <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
-                    <p className="text-sm text-gray-600 text-center">Available stock:{product.stock}</p>
-                    <p className="text-rose-600 font-bold text-lg">Rs. {product.price.toLocaleString()}</p>
+                    <Link to={`/product/${product._id}`} className="block">
+                      <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col items-center p-6">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-40 object-contain rounded-md mb-4"
+                        />
+                        <h3 className="text-lg font-semibold text-center mb-1">{product.name}</h3>
+                        <p className="text-sm text-gray-600 text-center">
+                          Available stock: {product.stock}
+                        </p>
+                        <p className="text-rose-600 font-bold text-lg">
+                          Rs. {product.price.toLocaleString()}
+                        </p>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
 
       {/* Footer */}

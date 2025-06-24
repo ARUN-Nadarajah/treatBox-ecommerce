@@ -13,7 +13,7 @@ interface User {
   address: string;
   DOB: string;
   gender: string;
-  image?: string;
+  image?: string; // base64 string
   password?: string;
 }
 
@@ -24,7 +24,6 @@ interface UpdateResponse {
 }
 
 const EditProfile: React.FC = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<User>({
     firstName: "",
@@ -42,6 +41,8 @@ const EditProfile: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [matchError, setMatchError] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const data = localStorage.getItem("user");
     if (data) {
@@ -51,16 +52,24 @@ const EditProfile: React.FC = () => {
     }
   }, []);
 
-  if (!user)
-    return <div className="text-center mt-20 text-gray-500">Loading profile...</div>;
-
   const validatePassword = (pw: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(pw);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target as HTMLInputElement;
+
+    // 🖼️ Image upload logic
+    if (name === "image" && files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, image: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
 
     if (name === "password") {
       setPasswordError(
@@ -106,6 +115,9 @@ const EditProfile: React.FC = () => {
     }
   };
 
+  if (!user)
+    return <div className="text-center mt-20 text-gray-500">Loading profile...</div>;
+
   return (
     <>
       <NavBar />
@@ -113,10 +125,16 @@ const EditProfile: React.FC = () => {
         className="min-h-screen bg-fixed bg-center bg-cover flex items-center justify-center"
         style={{
           backgroundImage:
-            "url('https://th.bing.com/th/id/OIP.yIxHbHGcQpP1EdvjA3FH_AHaEJ?rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3')",
+            "url('https://png.pngtree.com/background/20230522/original/pngtree-3d-bakery-cafe-design-with-coffee-tables-picture-image_2690236.jpg')",
         }}
       >
         <div className="bg-white/30 backdrop-blur-lg rounded-3xl p-10 max-w-3xl w-full mx-4 shadow-xl border border-white/40">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
+          >
+            ← Back
+          </button>
           <h2 className="text-4xl font-bold text-center text-rose-700 mb-6">
             Edit Profile
           </h2>
@@ -165,7 +183,7 @@ const EditProfile: React.FC = () => {
               })}
             </div>
 
-            {/* Password & Confirm */}
+            {/* 🔐 Password Fields */}
             <div className="space-y-4">
               <label className="block text-sm font-medium">New Password</label>
               <input
@@ -193,6 +211,7 @@ const EditProfile: React.FC = () => {
               {matchError && <p className="text-red-600 text-sm">{matchError}</p>}
             </div>
 
+            {/* 🎭 Gender & Image */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Gender</label>
@@ -211,18 +230,27 @@ const EditProfile: React.FC = () => {
                   ))}
                 </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Profile Image URL
+                  Profile Image
                 </label>
                 <input
                   name="image"
-                  type="url"
-                  placeholder="Paste image URL"
-                  value={formData.image || ""}
+                  type="file"
+                  accept="image/*"
                   onChange={handleChange}
                   className="w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition"
                 />
+                {formData.image && (
+                  <div className="mt-3">
+                    <img
+                      src={formData.image}
+                      alt="Preview"
+                      className="w-24 h-24 rounded-full object-cover border border-gray-400"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
