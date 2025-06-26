@@ -20,7 +20,7 @@ const Profile: React.FC = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const parsed = JSON.parse(storedUser);
-      fetch(`http://localhost:5000/api/users/${parsed._id}`)
+      fetch(`http://localhost:5001/api/users/${parsed._id}`)
         .then((res) => res.json())
         .then((data) => setUser(data))
         .catch((err) => {

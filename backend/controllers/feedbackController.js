@@ -1,7 +1,8 @@
-const Feedback = require('../models/Feedback');
+import Feedback from '../models/Feedback.js';
 
 // Add new feedback
 exports.createFeedback = async (req, res) => {
+  console.log("🔍 Received body:", req.body);
   try {
     console.log("REQ BODY:", req.body);
     const newFeedback = new Feedback(req.body);

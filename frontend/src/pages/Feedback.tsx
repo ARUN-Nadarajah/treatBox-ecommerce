@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 type FeedbackForm = {
   username: string;
   email: string;
-  number: string;
+  phone: string;
   feedback: string;
   rating: number;
 };
@@ -15,7 +15,7 @@ const Feedback = () => {
   const [form, setForm] = useState<FeedbackForm>({
     username: "",
     email: "",
-    number: "",
+    phone: "",
     feedback: "",
     rating: 0,
   });
@@ -24,10 +24,7 @@ const Feedback = () => {
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  // Auto-fill username, email, and phone from localStorage
   useEffect(() => {
-    console.log("Stored user:", localStorage.getItem("user"));
-
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
@@ -35,7 +32,7 @@ const Feedback = () => {
         ...prev,
         username: user.username || "",
         email: user.email || "",
-        phone: user.number  || "",
+        phone: user.number || "", 
       }));
     }
   }, []);
@@ -46,8 +43,8 @@ const Feedback = () => {
       newErrors.username = "Username must be at least 3 characters.";
     if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Enter a valid email.";
-    if (!/^\d{10}$/.test(form.number))
-      newErrors.number = "Phone must be exactly 10 digits.";
+    if (!/^\d{10}$/.test(form.phone))
+      newErrors.phone = "Phone must be exactly 10 digits.";
     if (form.feedback.trim().length < 10)
       newErrors.feedback = "Feedback must be at least 10 characters.";
     return newErrors;
@@ -81,7 +78,20 @@ const Feedback = () => {
         body: JSON.stringify(form),
       });
 
-      if (!response.ok) throw new Error("Failed to submit feedback");
+      try {
+        console.log("📤 Submitting form:", form);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+console.log(user)
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.log(errorData);
+        }
+      } catch (error) {
+        console.error("failed to submit", error);
+        
+      }
+      //if (!response.ok) throw new Error(console.error("Failed to submit feedback"));
 
       setSubmitted(true);
       alert("Thank you for your feedback!");
@@ -90,7 +100,7 @@ const Feedback = () => {
         setForm({
           username: form.username,
           email: form.email,
-          number: form.number,
+          phone: form.phone,
           feedback: "",
           rating: 0,
         });
@@ -104,8 +114,7 @@ const Feedback = () => {
   return (
     <>
       <NavBar />
-      <div
-        className="relative min-h-screen flex items-center justify-center p-8"
+      <div className="relative min-h-screen flex items-center justify-center p-8"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1470&q=80')",
@@ -119,7 +128,7 @@ const Feedback = () => {
           className="absolute top-6 left-6 text-pink-500 font-semibold hover:underline"
         >
           ← Back
-        </button> 
+        </button>
 
         <form
           onSubmit={handleSubmit}
@@ -129,7 +138,6 @@ const Feedback = () => {
             Share Your Feedback
           </h1>
 
-          {/* Username, Email, Phone */}
           {["username", "email", "phone"].map((field) => (
             <div key={field} className="flex flex-col gap-2">
               <label className="text-pink-600 font-semibold" htmlFor={field}>
@@ -141,7 +149,7 @@ const Feedback = () => {
                 type={field === "phone" ? "tel" : "text"}
                 value={form[field as keyof FeedbackForm] as string}
                 onChange={handleChange}
-                readOnly={field === "username" || field === "email" || field === "phone"}
+                readOnly={["username", "email", "phone"].includes(field)}
                 className="rounded-md px-4 py-2 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700"
                 required
               />
@@ -153,7 +161,6 @@ const Feedback = () => {
             </div>
           ))}
 
-          {/* Feedback */}
           <div className="flex flex-col gap-2">
             <label className="text-pink-600 font-semibold" htmlFor="feedback">
               Your Feedback
@@ -176,7 +183,6 @@ const Feedback = () => {
             )}
           </div>
 
-          {/* Rating */}
           <div className="flex flex-col items-center gap-2">
             <label className="text-pink-600 font-semibold">Rating</label>
             <div className="flex gap-2">

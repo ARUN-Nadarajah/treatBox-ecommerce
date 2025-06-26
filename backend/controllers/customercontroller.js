@@ -46,28 +46,53 @@ export const deleteCustomer = async (req, res) => {
     }
 };
 
+// ✅ UPDATE CUSTOMER
 export const updateCustomer = async (req, res) => {
+  try {
+    console.log("✅ Update hit");
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
     const id = req.params.id;
-    const customer = req.body;
+
     if (!mongoose.isValidObjectId(id)) {
-        return res.status(400).json({ success: false, message: "Invalid customer ID" });
+      return res.status(400).json({ success: false, message: "Invalid ID" });
     }
-    try {
-        // Hash the password if it is being updated
-        if (customer.password) {
-            const saltRounds = 10;
-            customer.password = await bcrypt.hash(customer.password, saltRounds);
-        }
-        const updated = await Usermodel.findByIdAndUpdate(id, customer, { new: true, runValidators: true });
-        if (!updated) {
-            return res.status(404).json({ success: false, message: "Customer not found" });
-        }
-        res.status(200).json({ success: true, message: "Customer is updated", customer: updated });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Failed to update customer" });
+
+    const updates = { ...req.body };
+
+    // Hash password if included
+    if (updates.password) {
+      const saltRounds = 10;
+      updates.password = await bcrypt.hash(updates.password, saltRounds);
     }
+
+    // Image upload path
+    if (req.file && req.file.path) {
+      updates.image = req.file.path;
+    }
+
+    const updated = await Usermodel.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    if (req.file) {
+  const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+  updates.image = base64Image;
+}
+
+
+    res.status(200).json({ success: true, message: "Updated", customer: updated });
+  } catch (error) {
+    console.error("❌ Update failed:", error.message);
+    console.error("🔴 Full error:", error);
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+  }
 };
+
 
 export const createCustomer = async (req, res) => {
     const customer = req.body;

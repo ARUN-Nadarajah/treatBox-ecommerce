@@ -7,6 +7,7 @@ const router = express.Router();
 // ✅ Get all notifications
 router.get("/", async (req, res) => {
   try {
+    
     const notifications = await Notification.find().sort({ createdAt: -1 }).limit(10);
     res.json(notifications);
   } catch (err) {

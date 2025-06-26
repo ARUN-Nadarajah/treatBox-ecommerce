@@ -13,7 +13,7 @@ interface User {
   address: string;
   DOB: string;
   gender: string;
-  image?: string; // base64 string
+  image?: string | File;
   password?: string;
 }
 
@@ -46,9 +46,22 @@ const EditProfile: React.FC = () => {
   useEffect(() => {
     const data = localStorage.getItem("user");
     if (data) {
-      const parsed: User = JSON.parse(data);
-      setUser(parsed);
-      setFormData(parsed);
+      const parsed = JSON.parse(data);
+      const userWithId: User = {
+        id: parsed._id || parsed.id,
+        firstName: parsed.firstName || "",
+        lastName: parsed.lastName || "",
+        username: parsed.username || "",
+        email: parsed.email || "",
+        number: parsed.number || "",
+        address: parsed.address || "",
+        DOB: parsed.DOB || "",
+        gender: parsed.gender || "",
+        image: parsed.image || "",
+        password: "",
+      };
+      setUser(userWithId);
+      setFormData(userWithId);
     }
   }, []);
 
@@ -60,14 +73,9 @@ const EditProfile: React.FC = () => {
   ) => {
     const { name, value, files } = e.target as HTMLInputElement;
 
-    // 🖼️ Image upload logic
     if (name === "image" && files && files.length > 0) {
       const file = files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+      setFormData((prev) => ({ ...prev, image: file }));
       return;
     }
 
@@ -99,16 +107,33 @@ const EditProfile: React.FC = () => {
       return;
     }
 
+   const data = new FormData();
+for (const key in formData) {
+  if (key !== "image") data.append(key, (formData as any)[key]);
+}
+if (formData.image && formData.image instanceof File) {
+  data.append("image", formData.image);
+}
+
+
     try {
       const res = await axios.put<UpdateResponse>(
         `http://localhost:5001/api/users/${formData.id}`,
-        formData
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       if (res.data.success) {
         localStorage.setItem("user", JSON.stringify(res.data.customer));
         alert("Profile updated!");
         navigate("/profile");
-      } else alert(res.data.message || "Update failed.");
+      } else {
+        alert(res.data.message || "Update failed.");
+      }
     } catch (err) {
       console.error(err);
       alert("Error while updating.");
@@ -140,33 +165,32 @@ const EditProfile: React.FC = () => {
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {["First Name", "Last Name", "Phone Number", "Date of Birth"].map((label) => {
-                const name =
-                  label === "Phone Number"
-                    ? "number"
-                    : label.toLowerCase().replace(" ", "");
-                return (
-                  <div key={label}>
-                    <label className="block text-sm font-medium mb-1">{label}</label>
-                    <input
-                      type={label === "Date of Birth" ? "date" : "text"}
-                      name={name}
-                      required
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      value={(formData as any)[name] as string}
-                      onChange={handleChange}
-                      className="w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition"
-                    />
-                  </div>
-                );
-              })}
+              {[
+                { label: "First Name", name: "firstName" },
+                { label: "Last Name", name: "lastName" },
+                { label: "Phone Number", name: "number" },
+                { label: "Date of Birth", name: "DOB", type: "date" },
+                { label: "Address", name: "address" },
+              ].map(({ label, name, type }) => (
+                <div key={name}>
+                  <label className="block text-sm font-medium mb-1">{label}</label>
+                  <input
+                    type={type || "text"}
+                    name={name}
+                    required
+                    value={(formData as any)[name] || ""}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition"
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="space-y-4">
               {["Username", "Email"].map((label) => {
                 const name = label.toLowerCase();
                 return (
-                  <div key={label}>
+                  <div key={name}>
                     <label className="block text-sm font-medium mb-1">
                       {label}
                     </label>
@@ -174,8 +198,7 @@ const EditProfile: React.FC = () => {
                       type={label === "Email" ? "email" : "text"}
                       name={name}
                       readOnly
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      value={(formData as any)[name] as string}
+                      value={(formData as any)[name]}
                       className="w-full p-3 rounded-lg bg-gray-200 text-gray-500 border border-gray-300 cursor-not-allowed"
                     />
                   </div>
@@ -183,7 +206,7 @@ const EditProfile: React.FC = () => {
               })}
             </div>
 
-            {/* 🔐 Password Fields */}
+            {/* Password Fields */}
             <div className="space-y-4">
               <label className="block text-sm font-medium">New Password</label>
               <input
@@ -211,7 +234,7 @@ const EditProfile: React.FC = () => {
               {matchError && <p className="text-red-600 text-sm">{matchError}</p>}
             </div>
 
-            {/* 🎭 Gender & Image */}
+            {/* Gender & Image */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Gender</label>
@@ -242,7 +265,7 @@ const EditProfile: React.FC = () => {
                   onChange={handleChange}
                   className="w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition"
                 />
-                {formData.image && (
+                {formData.image && typeof formData.image === "string" && (
                   <div className="mt-3">
                     <img
                       src={formData.image}
