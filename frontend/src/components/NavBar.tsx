@@ -1,3 +1,5 @@
+// src/components/NavBar.tsx
+
 import {
   Disclosure,
   DisclosureButton,
@@ -43,43 +45,30 @@ const NavBar: React.FC = () => {
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      // Initial fetch
+    if (!isLoggedIn || !isAdmin) return;
+
+    const fetchNotifications = () => {
       axios
-        .get("http://localhost:5001/api/notifications")
+        .get("http://localhost:5001/api/notifications?target=admin")
         .then((res) => {
           setNotifications(Array.isArray(res.data) ? res.data : []);
         })
         .catch((err) => {
-          if (err instanceof Error) {
-            console.error("Failed to load notifications:", err.message);
-          } else {
-            console.error("Unknown error while loading notifications:", err);
-          }
+          console.error("Failed to load notifications:", err);
         });
+    };
 
-      // Polling for updates
-      const interval = setInterval(() => {
-        if (localStorage.getItem("new_notification") === "true") {
-          axios
-            .get("http://localhost:5001/api/notifications")
-            .then((res) => {
-              setNotifications(Array.isArray(res.data) ? res.data : []);
-              localStorage.removeItem("new_notification");
-            })
-            .catch((err) => {
-              if (err instanceof Error) {
-                console.error("Failed to refresh notifications:", err.message);
-              } else {
-                console.error("Unknown error:", err);
-              }
-            });
-        }
-      }, 5000);
+    fetchNotifications();
 
-      return () => clearInterval(interval);
-    }
-  }, [isLoggedIn]);
+    const interval = setInterval(() => {
+      if (localStorage.getItem("new_notification") === "true") {
+        fetchNotifications();
+        localStorage.removeItem("new_notification");
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isLoggedIn, isAdmin]);
 
   return (
     <Disclosure as="nav" className="bg-rose-100 shadow-md sticky top-0 z-50">
@@ -87,14 +76,12 @@ const NavBar: React.FC = () => {
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between items-center">
-              {/* Logo */}
               <div className="flex items-center">
                 <Link to="/" className="text-2xl font-bold text-rose-700">
                   TreatBox
                 </Link>
               </div>
 
-              {/* Desktop Nav Links */}
               <div className="hidden md:flex space-x-8">
                 {navigation.map((item) => (
                   <Link
@@ -107,16 +94,12 @@ const NavBar: React.FC = () => {
                 ))}
               </div>
 
-              {/* Right side */}
               <div className="flex items-center space-x-4 relative">
-                {/* Notification Bell */}
-                {isLoggedIn && (
+                {isLoggedIn && isAdmin && (
                   <div className="relative">
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowNotifDropdown((prev) => !prev)
-                      }
+                      onClick={() => setShowNotifDropdown((prev) => !prev)}
                       className="text-rose-700 hover:text-rose-900 p-1 relative"
                     >
                       <span className="sr-only">View notifications</span>
@@ -134,16 +117,27 @@ const NavBar: React.FC = () => {
                           {notifications.length > 0 ? (
                             notifications.map((notif, idx) => (
                               <div
-                                key={idx}
-                                className="px-4 py-2 hover:bg-rose-50 border-b"
+                                key={notif._id || idx}
+                                className="block px-4 py-2 hover:bg-rose-50 border-b text-sm text-gray-700 cursor-pointer"
+                                onClick={() => {
+                                  setNotifications((prev) =>
+                                    prev.filter((n) => n._id !== notif._id)
+                                  );
+
+                                  axios
+                                    .delete(`http://localhost:5001/api/notifications/${notif._id}`)
+                                    .catch((err) =>
+                                      console.error("Failed to remove notification", err)
+                                    );
+
+                                  setShowNotifDropdown(false);
+                                }}
                               >
-                                {notif.message}
+                                🧁 {notif.message}
                               </div>
                             ))
                           ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No notifications
-                            </div>
+                            <div className="px-4 py-2 text-gray-500">No notifications</div>
                           )}
                         </div>
                       </div>
@@ -151,7 +145,6 @@ const NavBar: React.FC = () => {
                   </div>
                 )}
 
-                {/* Profile Dropdown */}
                 {isLoggedIn && (
                   <Menu as="div" className="relative">
                     <MenuButton className="flex rounded-full focus:outline-none">
@@ -208,7 +201,6 @@ const NavBar: React.FC = () => {
                   </Menu>
                 )}
 
-                {/* Mobile Menu */}
                 <div className="md:hidden">
                   <DisclosureButton className="text-rose-700 hover:text-rose-900 focus:outline-none">
                     {open ? (
@@ -222,7 +214,6 @@ const NavBar: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile Nav Panel */}
           <DisclosurePanel className="md:hidden px-4 pb-4 pt-2 space-y-2">
             {navigation.map((item) => (
               <Link

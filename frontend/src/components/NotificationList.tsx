@@ -1,9 +1,31 @@
 // src/components/NotificationList.tsx
-import useNotifications from "../hooks/useNotifications";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+type Notification = {
+  id: string;
+  message: string;
+  productId?: string;
+};
+
 export default function NotificationList() {
-  const notifications = useNotifications();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5001/api/notifications")
+      .then((res) => res.json())
+      .then((data) => setNotifications(data))
+      .catch((err) => console.error("Failed to fetch notifications", err));
+  }, []);
+
+  const handleClick = async (notifId: string) => {
+    // remove from UI
+    setNotifications((prev) => prev.filter((n) => n.id !== notifId));
+    // delete on backend
+    await fetch(`http://localhost:5001/api/notifications/${notifId}`, {
+      method: "DELETE",
+    });
+  };
 
   if (notifications.length === 0) return null;
 
@@ -12,16 +34,17 @@ export default function NotificationList() {
       <h3 className="text-lg font-bold text-rose-600 mb-3">🔔 Latest Updates</h3>
       <ul className="space-y-2">
         {notifications.map((notif) => (
-          <li key={notif._id}>
+          <li key={notif.id}>
             {notif.productId ? (
               <Link
                 to={`/?scrollTo=${notif.productId}`}
+                onClick={() => handleClick(notif.id)}
                 className="text-blue-600 hover:underline flex items-center gap-1"
               >
                 🧁 {notif.message}
               </Link>
             ) : (
-              <span>🧁 {notif.message}</span>
+              <span className="text-gray-700">🧁 {notif.message}</span>
             )}
           </li>
         ))}

@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { fetchProducts } from "../APIs/productApi";
 import type { Product } from "../APIs/productApi";
 import NavBar from "../components/NavBar";
-// import NotificationList from "../components/NotificationList";
 
 export default function UserHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -55,7 +54,6 @@ export default function UserHomePage() {
     <div className="font-sans text-gray-800">
       <NavBar />
 
-
       {/* Hero Banner */}
       <section
         className="relative h-screen flex items-center justify-center text-center px-6 bg-cover bg-center"
@@ -102,7 +100,7 @@ export default function UserHomePage() {
         </select>
       </div>
 
-      {/* Product Sections with Background Image */}
+      {/* Product Sections */}
       <div
         className="mt-10 bg-cover bg-center"
         style={{
@@ -123,7 +121,10 @@ export default function UserHomePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
                 {categoryProducts.map((product) => (
                   <div
-                    ref={(el) => { productRefs.current[product._id] = el; }}
+                    id={product._id}
+                    ref={(el) => {
+                      productRefs.current[product._id] = el;
+                    }}
                     key={product._id}
                     className="w-full max-w-xs"
                   >

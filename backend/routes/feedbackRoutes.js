@@ -1,5 +1,6 @@
 import express from 'express';
 import Feedback from '../models/Feedback.js';
+import Notification from '../models/Notification.js';
 const router = express.Router();
 
 
@@ -16,6 +17,12 @@ router.post('/', async (req, res) => {
 
     const newFeedback = new Feedback({ username, email, phone, feedback, rating });
     await newFeedback.save();
+
+        // 🔔 Create admin-only notification
+    await Notification.create({
+      message: `📢 New feedback from ${username}`,
+      target: "admin",
+    });
 
     res.status(201).json({ message: 'Feedback submitted successfully' });
   } catch (err) {
