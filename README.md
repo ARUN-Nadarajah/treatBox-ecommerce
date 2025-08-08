@@ -31,6 +31,6 @@ TreatBox‑ecommerce is a full‑featured bakery e‑commerce platform that offe
 | Backend       | Node.js, Express                    |
 | Database      | MongoDB, Mongoose (ODM)             |
 | Authentication| JWT or Session-based (if implemented)|
-| Deployment    | (e.g., Heroku, Vercel, Netlify)     |
+| Deployment    | Not yet     |
 
 ---
